@@ -1,5 +1,6 @@
 from card.card import Card
 from player.player import Player
+from command.command import Command
 
 def main():
 	players = []
@@ -14,6 +15,7 @@ def main():
 	for player in players:
 		print("Player : %s turn, please enter a valid command to place a card" % player.name)
 		command = input()
+		print(Command.valid(command))
 		# print(command.split(' '))
 
 	
