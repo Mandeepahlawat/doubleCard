@@ -6,7 +6,10 @@ class Player:
 		self.name = name
 		self.cards = []
 		self.assign_cards()
-
+	
+	def setPlayerStrategy(self, strategy):
+		self.strategy = strategy
+		
 	def assign_cards(self):
 		for i in range(12):
 			card = Card()

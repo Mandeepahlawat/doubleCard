@@ -17,30 +17,36 @@ def main():
 
 	print(str(board))
 
-
+	
+	#set strategy
+	while(True):
+		value = input("Enter player1's strategy (dots or color)\n")
+		if value == 'dots':
+			p1.strategy = value
+			p2.value = 'color'
+			break
+		elif value == 'color':
+			p1.strategy = value
+			p2.value = 'dots'
+			break
 
 	for player in players:
-		print("Player : %s turn, please enter a valid command to place a card" % player.name)
-		if player.name == 'player1':
-			card = random.choice(player.get_empty_cards())
-			
-			## TODO when assigninng miniCard to cell make sure to reverse the order
-			## 1 will start from bottom and not from the top, also array index starts from
-			## 0 but the rows starts from 1
-			board.cells[1][1].set_miniCard(card.miniCard1)
-			board.cells[1][2].set_miniCard(card.miniCard2)
+		print("Player : %s's turn, please enter a valid command to place a card" % player.name)
+		
+		## TODO when assigninng miniCard to cell make sure to reverse the order
+		## 1 will start from bottom and not from the top, also array index starts from
+		## 0 but the rows starts from 1
+		
+		while True:	
+			cmd = input("$$ ")
+			if not Command.valid(cmd):
+				print("invalid command")
+			else:
+				#check if card can be placed there, 
+				# i.e. there are cards under both the positions of the card
+				# place the card
+				break
 
-		# command = input()
-		# print(Command.valid(command))
-		# print(command.split(' '))
-
-
-	print(str(board))
-	
-
-
-
-
-
+		#print(str(board))
 
 main()
