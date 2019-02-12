@@ -2,8 +2,6 @@ from board.board import Board
 
 class Command:
 	VALID_CARD_ROTATION = ['1','2','3','4','5','6','7','8']
-	
-	# TODO detech edge commands
 
 	@classmethod
 	def valid(cls, command_text):
@@ -91,4 +89,23 @@ class Command:
 		else:
 			return False
 
+	@classmethod
+	def returnPossibleMoves(cls, board):
+		possibleMoves = []
+		for row_index, row in enumerate(reversed(board)):
+			for col_index, cell in enumerate(row):
+				#check if cell is empty
+				if(cell.miniCard == None):
+					#check if the cell is not on top the empty cell
+					if(row_index != 0 and board.get_cell(row_index, col_index).miiniCard != None):
+						#get all the neighbouring cells
+						neighbours = board.getNeighbouringCells(row_index, col_index)
+						for cell in neighbours:
+							#check if the neighbour is empty
+							if (cell.miniCard == None):
+								#todo
+								
+							
+
+		return possibleMoves							
 		

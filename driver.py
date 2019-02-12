@@ -40,7 +40,7 @@ def main():
 		while True:	
 			cmd = input("$$ ")
 			if not Command.valid(cmd):
-				print("invalid command")
+				print("invalid command, try again")
 			else:
 				#check if card can be placed there, 
 				# i.e. there are cards under both the positions of the card
