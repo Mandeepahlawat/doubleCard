@@ -1,9 +1,15 @@
 class MiniCard:
 	def __init__(self):
 		self.cell = None
+		self.color = None
+		self.text = None
+		self.card = None
 
 	def set_color(self, color):
 		self.color = color
+
+	def set_card(self, card):
+		self.card = card
 
 	def set_text(self, text):
 		self.text = text

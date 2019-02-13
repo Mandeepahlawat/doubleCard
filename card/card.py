@@ -6,10 +6,12 @@ class Card:
 		self.miniCard1 = MiniCard()
 		self.miniCard1.set_color('red')
 		self.miniCard1.set_text('0')
+		self.miniCard1.set_card(self)
 
 		self.miniCard2 = MiniCard()
 		self.miniCard2.set_color('white')
 		self.miniCard2.set_text('O')
+		self.miniCard2.set_card(self)
 
 	def set_player(self, player):
 		self.player = player

@@ -19,7 +19,7 @@ def main():
 
 	
 	#set strategy
-	while(True):
+	while True:
 		value = input("Enter player1's strategy (dots or color)\n")
 		if value == 'dots':
 			p1.strategy = value
@@ -30,23 +30,38 @@ def main():
 			p2.value = 'dots'
 			break
 
-	for player in players:
-		print("Player : %s's turn, please enter a valid command to place a card" % player.name)
-		
-		## TODO when assigninng miniCard to cell make sure to reverse the order
-		## 1 will start from bottom and not from the top, also array index starts from
-		## 0 but the rows starts from 1
-		
-		while True:	
-			cmd = input("$$ ")
-			if not Command.valid(cmd):
-				print("invalid command")
-			else:
-				#check if card can be placed there, 
-				# i.e. there are cards under both the positions of the card
-				# place the card
-				break
+	game_completed = False
 
-		#print(str(board))
+	while not game_completed:
+		for player in players:
+			print("Player : %s's turn, please enter a valid command to place a card" % player.name)
+			
+			## TODO when assigninng miniCard to cell make sure to reverse the order
+			## 1 will start from bottom and not from the top, also array index starts from
+			## 0 but the rows starts from 1
+			
+			while True:	
+				cmd = input("$$ ")
+				if not Command.valid(cmd):
+					print("invalid command")
+				else:
+					#check if card can be placed there, 
+					# i.e. there are cards under both the positions of the card
+					# place the card
+
+					### sample commands to assign mini card to a cell
+					# card = random.choice(player.get_empty_cards())
+					# board.cells[0][0].set_miniCard(card.miniCard1)
+					# board.cells[1][1].set_miniCard(card.miniCard1)
+					# board.cells[2][2].set_miniCard(card.miniCard1)
+					# board.cells[3][3].set_miniCard(card.miniCard1)
+					###
+					break
+			if board.is_game_finished():
+				print("Player : %s won the game" % player.name)
+				game_completed = True
+				break
+		
+		print(str(board))
 
 main()
