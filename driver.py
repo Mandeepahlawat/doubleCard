@@ -14,13 +14,16 @@ def main():
 	# print(str(p1.cards[0]))
 	# print(p2.cards)
 	board = Board()
+	num_moves = 0
+	num_cards_on_board = 0
 
 	print(str(board))
 
 	
 	#set strategy
 	while True:
-		value = input("Enter player1's strategy (dots or color)\n")
+		#value = input("Enter player1's strategy (dots or color)\n")
+		value = 'dots'
 		if value == 'dots':
 			p1.strategy = value
 			p2.value = 'color'
@@ -41,9 +44,11 @@ def main():
 			## 0 but the rows starts from 1
 			
 			while True:	
+				possibleMoves = Command.returnPossibleMoves(board, num_cards_on_board, lastCardPosition)
+				print(possibleMoves)
 				cmd = input("$$ ")
-				if not Command.valid(cmd):
-					print("invalid command")
+				if cmd not in possibleMoves:
+					print("invalid command, try again")
 				else:
 					#check if card can be placed there, 
 					# i.e. there are cards under both the positions of the card
@@ -57,11 +62,12 @@ def main():
 					# board.cells[3][3].set_miniCard(card.miniCard1)
 					###
 					break
+
 			if board.is_game_finished():
 				print("Player : %s won the game" % player.name)
 				game_completed = True
 				break
-		
+
 		print(str(board))
 
 main()
