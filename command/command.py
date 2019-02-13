@@ -90,22 +90,47 @@ class Command:
 			return False
 
 	@classmethod
-	def returnPossibleMoves(cls, board):
+	def returnPossibleMoves(cls, board, num_cards_on_board, lastCardPosition):
 		possibleMoves = []
-		for row_index, row in enumerate(reversed(board)):
-			for col_index, cell in enumerate(row):
-				#check if cell is empty
-				if(cell.miniCard == None):
-					#check if the cell is not on top the empty cell
-					if(row_index != 0 and board.get_cell(row_index, col_index).miiniCard != None):
-						#get all the neighbouring cells
-						neighbours = board.getNeighbouringCells(row_index, col_index)
-						for cell in neighbours:
-							#check if the neighbour is empty
-							if (cell.miniCard == None):
-								#todo
-								
-							
+		#Regular moves
+		if num_cards_on_board < 24:
+				for row_index, row in enumerate(reversed(Board.BOARD_ROWS)):
+					for col_index, cell in enumerate(Board.BOARD_COLUMNS):
+						cell = board.cells[row_index][col_index]
+						#check if cell is empty
+						if(cell.miniCard == None):
+							#check if the cell is not on top the empty cell
+							if row_index == 0 or board.get_cell(row_index-1, col_index) != None:
+								#get all the neighbouring cells
+								neighbours = board.getNeighbouringCells(row_index, col_index)
+								for neighbour_index, neighbour in enumerate(neighbours):
+									#check if the neighbour neighour is not out of range #(condition can cause error)
+									if neighbour != "None":
+										#check if neighbour is empty
+										if neighbour == None:
+											#check if neighbour is not hanging on empty cell
+											if (row_index == 0
+												or neighbour_index == 0
+												or (neighbour_index == 1 and board.get_cell(row_index-1, col_index+1).miiniCard != None)
+											):
+												if neighbour_index == 0:
+													possibleMoves.append("0 2 " + board.BOARD_COLUMNS[col_index]  + str(row_index+1))
+													possibleMoves.append("0 4 " + board.BOARD_COLUMNS[col_index]  + str(row_index+1))
+													possibleMoves.append("0 6 " + board.BOARD_COLUMNS[col_index]  + str(row_index+1))
+													possibleMoves.append("0 8 " + board.BOARD_COLUMNS[col_index]  + str(row_index+1))
+												if neighbour_index == 1:
+													possibleMoves.append("0 1 " + board.BOARD_COLUMNS[col_index]  + str(row_index+1))
+													possibleMoves.append("0 3 " + board.BOARD_COLUMNS[col_index]  + str(row_index+1))
+													possibleMoves.append("0 5 " + board.BOARD_COLUMNS[col_index]  + str(row_index+1))
+													possibleMoves.append("0 7 " + board.BOARD_COLUMNS[col_index]  + str(row_index+1))
+		#Recycling moves
+		else:											
+			#TODO	
+			for row_index, row in enumerate(reversed(Board.BOARD_ROWS)):
+					for col_index, cell in enumerate(Board.BOARD_COLUMNS):
+						cell = board.cells[row_index][col_index]
+						#check if cell is not empty or its not the card just placed by the other player
+						if(cell.miniCard != None or (board.BOARD_COLUMNS[col_index]  + str(row_index+1) != lastCardPosition)):
+							#cell minicard problem how to know this card belongs to which neighbour?
 
-		return possibleMoves							
-		
+		return possibleMoves	

@@ -20,37 +20,40 @@ class Board:
 	def getNeighbouringCells(self, row_index, col_index):
 		neighbours = []
 		if row_index == 0 and col_index == 0:
+			#neighbours.append("None")
 			neighbours.append(self.get_cell(row_index+1, col_index))
 			neighbours.append(self.get_cell(row_index, col_index+1))
 		elif row_index == 11 and col_index == 7:
-			neighbours.append(self.get_cell(row_index-1, col_index))
-			neighbours.append(self.get_cell(row_index, col_index-1))
+			#neighbours.append(self.get_cell(row_index, col_index-1))
+			neighbours.append("None")
+			neighbours.append("None")
 		elif row_index == 0 and col_index == 7:
+			#neighbours.append(self.get_cell(row_index, col_index-1))
 			neighbours.append(self.get_cell(row_index+1, col_index))
-			neighbours.append(self.get_cell(row_index, col_index-1))
+			neighbours.append("None")
 		elif row_index == 11 and col_index == 0:
+			#neighbours.append("None")
+			neighbours.append("None")
 			neighbours.append(self.get_cell(row_index, col_index+1))
-			neighbours.append(self.get_cell(row_index-1, col_index))
 		elif row_index == 0:
+			#neighbours.append(self.get_cell(row_index, col_index-1))
+			neighbours.append(self.get_cell(row_index+1, col_index))
 			neighbours.append(self.get_cell(row_index, col_index+1))
-			neighbours.append(self.get_cell(row_index, col_index-1))
-			neighbours.append(self.get_cell(row_index+1, col_index))
 		elif col_index == 0:
+			#neighbours.append("None")
 			neighbours.append(self.get_cell(row_index+1, col_index))
-			neighbours.append(self.get_cell(row_index-1, col_index))
 			neighbours.append(self.get_cell(row_index, col_index+1))
 		elif row_index == 11:
-			neighbours.append(self.get_cell(row_index, col_index-1))
+			#neighbours.append(self.get_cell(row_index, col_index-1))
+			neighbours.append("None")
 			neighbours.append(self.get_cell(row_index, col_index+1))
-			neighbours.append(self.get_cell(row_index-1, col_index))
 		elif col_index == 7:
+			#neighbours.append(self.get_cell(row_index, col_index-1))
 			neighbours.append(self.get_cell(row_index+1, col_index))
-			neighbours.append(self.get_cell(row_index-1, col_index))
-			neighbours.append(self.get_cell(row_index, col_index-1))
+			neighbours.append("None")
 		else:
+			#neighbours.append(self.get_cell(row_index, col_index-1))
 			neighbours.append(self.get_cell(row_index+1, col_index))
-			neighbours.append(self.get_cell(row_index-1, col_index))
-			neighbours.append(self.get_cell(row_index, col_index-1))
 			neighbours.append(self.get_cell(row_index, col_index+1))
 		
 		return neighbours
