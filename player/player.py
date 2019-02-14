@@ -6,6 +6,7 @@ class Player:
 		self.name = name
 		self.cards = []
 		self.assign_cards()
+		self.winner = False
 	
 	def setPlayerStrategy(self, strategy):
 		self.strategy = strategy
@@ -19,7 +20,7 @@ class Player:
 	def get_empty_cards(self):
 		cards = []
 		for card in self.cards:
-			if card.miniCard1.cell is None and card.miniCard2.cell is None:
+			if not card.placed_on_board:
 				cards.append(card)
 
 		return cards

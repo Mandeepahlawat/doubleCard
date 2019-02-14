@@ -17,8 +17,6 @@ def main():
 	num_moves = 0
 	num_cards_on_board = 0
 
-	print(str(board))
-
 	
 	#set strategy
 	while True:
@@ -37,6 +35,7 @@ def main():
 
 	while not game_completed:
 		for player in players:
+			print(str(board))
 			print("Player : %s's turn, please enter a valid command to place a card" % player.name)
 			
 			## TODO when assigninng miniCard to cell make sure to reverse the order
@@ -44,7 +43,7 @@ def main():
 			## 0 but the rows starts from 1
 			
 			while True:	
-				possibleMoves = Command.returnPossibleMoves(board, num_cards_on_board, lastCardPosition)
+				possibleMoves = Command.returnPossibleMoves(board, num_cards_on_board, lastCardPosition=None)
 				print(possibleMoves)
 				cmd = input("$$ ")
 				if cmd not in possibleMoves:
@@ -55,16 +54,45 @@ def main():
 					# place the card
 
 					### sample commands to assign mini card to a cell
-					# card = random.choice(player.get_empty_cards())
-					# board.cells[0][0].set_miniCard(card.miniCard1)
-					# board.cells[1][1].set_miniCard(card.miniCard1)
-					# board.cells[2][2].set_miniCard(card.miniCard1)
-					# board.cells[3][3].set_miniCard(card.miniCard1)
-					###
+					card = random.choice(player.get_empty_cards())
+					cell1, cell2 = board.get_cells_by_command(cmd)
+
+					orientation = Board.get_orientation_and_cell_position(cmd)[0]
+
+					
+					# minicard1 is always placed at cell entered by the user so we need to flip color/text based on orientation
+					# if((orientation in ['1', '2', '5', '6'] and card.miniCard1.color != 'red')
+					# 	or (orientation in ['3', '4', '7', '8'] and card.miniCard1.color != 'white')
+					# ):
+					# 	card.flip_color()
+
+					# if((orientation in ['3', '4', '5', '6'] and card.miniCard1.text != 'O')
+					# 	or (orientation in ['1', '2', '7', '8'] and card.miniCard1.text != '0')
+					# ):
+					# 	card.flip_text()
+
+					### use this if we just need to rotate
+					if orientation in ['1', '4', '5', '8']:
+						cell1.set_miniCard(card.miniCard1(orientation))
+						cell2.set_miniCard(card.miniCard2(orientation))
+					else:
+						cell1.set_miniCard(card.miniCard2(orientation))
+						cell2.set_miniCard(card.miniCard1(orientation))
+
+						
+					### use this we it can also go down, left
+					# cell1.set_miniCard(card.miniCard1(orientation))
+					# cell2.set_miniCard(card.miniCard2(orientation))
 					break
 
-			if board.is_game_finished():
-				print("Player : %s won the game" % player.name)
+			if board.is_game_finished(p1, p2):
+				if p1.winner and p2.winner:
+					print("Player : %s won the game" % player.name)
+				elif p1.winner:
+					print("Player : %s won the game" % p1.name)
+				else:
+					print("Player : %s won the game" % p2.name)
+
 				game_completed = True
 				break
 

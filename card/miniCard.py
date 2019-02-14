@@ -17,6 +17,7 @@ class MiniCard:
 	def set_cell(self, cell):
 		self.cell = cell
 		cell.miniCard = self
+		self.card.placed_on_board = True
 		# self.cell.set_miniCard(self) 
 
 	def __str__(self):
