@@ -4,7 +4,6 @@ class Board:
 
 	BOARD_COLUMNS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
 	BOARD_ROWS = ['1','2','3','4','5','6','7','8','9','10','11','12']
-
 	BOARD_ROWS_TO_INDEX = {'1': 11,'2': 10,'3': 9,'4': 8,'5': 7,'6': 6,'7': 5,'8': 4,'9': 3,'10': 2,'11': 1,'12': 0}
 
 	def __init__(self):
@@ -33,11 +32,11 @@ class Board:
 
 	# return cell based on position like A2
 	def get_cell_by_string_position(self, position):
-		col_index, row_index = self.get_cell_by_string_position(position)
+		col_index, row_index = self.get_cell_index_by_string_position(position)
 		return self.cells[row_index][col_index]
 
 	# return cells row and col indices based on position like A2
-	def get_cell_by_string_position(self, position):
+	def get_cell_index_by_string_position(self, position):
 		col_index = Board.BOARD_COLUMNS.index(position[0])
 		row_index = Board.BOARD_ROWS_TO_INDEX[position[1]]
 		return (col_index, row_index)
@@ -112,42 +111,11 @@ class Board:
 			return True
 		else:
 			return False
-		# for i in range(len(Board.BOARD_ROWS)):
-		# 	row = self.cells[i]
-		# 	for r in range(len(row) - 3):
-		# 		print(r)
-		# 		if(row[r].text() == row[r+1].text()
-		# 			and row[r+1].text() == row[r+2].text()
-		# 			and row[r+2].text() == row[r+3].text()
-		# 		):
-		# 			# same text
-		# 			return True
-		# 		if(row[r].color() == row[r+1].color()
-		# 			and row[r+1].color() == row[r+2].color()
-		# 			and row[r+2].color() == row[r+3].color()
-		# 		):
-		# 			# same color in row
-		# 			return True
-		
-		# # check for all columns
-		# for i in range(len(Board.BOARD_COLUMNS)):
-		# 	col = self.get_column(i)
-		# 	for c in range(len(col) - 3):
-		# 		if(col[c].text() == col[c+1].text()
-		# 			and col[c+1].text() == col[c+2].text()
-		# 			and col[c+2].text() == col[c+3].text()
-		# 		):
-		# 			return True
-		# 		if(col[c].color() == col[c+1].color()
-		# 			and col[c+1].color() == col[c+2].color()
-		# 			and col[c+2].color() == col[c+3].color()
-		# 		):
-		# 			return True
 
 
 	def get_cells_by_command(self, command):
 		orientation, cell_position = Board.get_orientation_and_cell_position(command)
-		position1_col_index, position1_row_index = self.get_cell_by_string_position(cell_position)
+		position1_col_index, position1_row_index = self.get_cell_index_by_string_position(cell_position)
 
 		### use this or the bottom conditions depending on the correct case
 		# if orientation == '1' or orientation == '5':
