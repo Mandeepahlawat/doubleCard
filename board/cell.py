@@ -28,6 +28,14 @@ class Cell:
 		mini_card.card.placed_on_board = True
 		# self.miniCard.set_cell(self)
 
+	def remove_miniCard(self):
+		mini_card = self.miniCard
+		self.miniCard = None
+		mini_card.cell = None
+		self.player = None
+		mini_card.card.placed_on_board = False
+
+
 	def __str__(self):
 		if self.miniCard:
 			return "%s" % str(self.miniCard)

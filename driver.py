@@ -49,29 +49,21 @@ def main():
 				if cmd.upper() not in possibleMoves:
 					print("invalid command, try again")
 				else:
-					#check if card can be placed there, 
-					# i.e. there are cards under both the positions of the card
-					# place the card
-
-					### sample commands to assign mini card to a cell
-					card = random.choice(player.get_empty_cards())
 					cell1, cell2 = board.get_cells_by_command(cmd)
-
 					orientation = Board.get_orientation_and_cell_position(cmd)[0]
 
-					
-					# minicard1 is always placed at cell entered by the user so we need to flip color/text based on orientation
-					# if((orientation in ['1', '2', '5', '6'] and card.miniCard1.color != 'red')
-					# 	or (orientation in ['3', '4', '7', '8'] and card.miniCard1.color != 'white')
-					# ):
-					# 	card.flip_color()
+					if cmd[0] == '0':
+						card = random.choice(player.get_empty_cards())
+					else:
+						command_list = cmd.upper().strip().split(" ")
+						prev_cell1 = board.get_cell_by_string_position(command_list[0])
+						prev_cell2 = board.get_cell_by_string_position(command_list[1])
 
-					# if((orientation in ['3', '4', '5', '6'] and card.miniCard1.text != 'O')
-					# 	or (orientation in ['1', '2', '7', '8'] and card.miniCard1.text != '0')
-					# ):
-					# 	card.flip_text()
+						card = prev_cell1.miniCard.card
 
-					### use this if we just need to rotate
+						prev_cell1.remove_miniCard()
+						prev_cell2.remove_miniCard()
+
 					if orientation in ['1', '4', '5', '8']:
 						cell1.set_miniCard(card.miniCard1(orientation))
 						cell2.set_miniCard(card.miniCard2(orientation))
@@ -79,10 +71,6 @@ def main():
 						cell1.set_miniCard(card.miniCard2(orientation))
 						cell2.set_miniCard(card.miniCard1(orientation))
 
-						
-					### use this we it can also go down, left
-					# cell1.set_miniCard(card.miniCard1(orientation))
-					# cell2.set_miniCard(card.miniCard2(orientation))
 					break
 
 			if board.is_game_finished(p1, p2):

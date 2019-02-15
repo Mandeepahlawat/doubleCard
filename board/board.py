@@ -117,20 +117,6 @@ class Board:
 		orientation, cell_position = Board.get_orientation_and_cell_position(command)
 		position1_col_index, position1_row_index = self.get_cell_index_by_string_position(cell_position)
 
-		### use this or the bottom conditions depending on the correct case
-		# if orientation == '1' or orientation == '5':
-		# 	position2_col_index = position1_col_index + 1
-		# 	position2_row_index = position1_row_index
-		# elif orientation == '2' or orientation == '6':
-		# 	position2_col_index = position1_col_index
-		# 	position2_row_index = position1_row_index + 1
-		# elif orientation == '3' or orientation == '7':
-		# 	position2_col_index = position1_col_index - 1
-		# 	position2_row_index = position1_row_index
-		# elif orientation == '4' or orientation == '8':
-		# 	position2_col_index = position1_col_index
-		# 	position2_row_index = position1_row_index - 1
-
 		if orientation in ['1', '3', '5', '7']:
 			position2_col_index = position1_col_index + 1
 			position2_row_index = position1_row_index
