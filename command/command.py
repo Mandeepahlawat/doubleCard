@@ -97,24 +97,24 @@ class Command:
 		possibleMoves = []
 		#Regular moves
 		if num_cards_on_board < 24:
-			for row_index, row in enumerate(reversed(Board.BOARD_ROWS)):
-				for col_index, cell in enumerate(Board.BOARD_COLUMNS):
-					cell = board.cells[row_index][col_index]
+			for row_index, row in enumerate(Board.BOARD_ROWS):
+				for col_index, col in enumerate(Board.BOARD_COLUMNS):
+					cell = board.get_cell_by_string_position(col+row)
 					#check if cell is empty
 					if(cell.miniCard == None):
 						#check if the cell is not on top the empty cell
-						if row_index == 0 or board.get_cell(row_index-1, col_index) != None:
+						if row == '1' or board.get_cell_by_string_position(col + board.BOARD_ROWS[row_index-1]).miniCard != None:
 							#get all the neighbouring cells
 							neighbours = board.getNeighbouringCells(row_index, col_index)
 							for neighbour_index, neighbour in enumerate(neighbours):
-								#check if the neighbour neighour is not out of range #(condition can cause error)
+								#check if the neighbour is not out of range #(condition can cause error)
 								if neighbour != "None":
 									#check if neighbour is empty
-									if neighbour == None:
+									if neighbour.miniCard == None:
 										#check if neighbour is not hanging on empty cell
-										if (row_index == 0
+										if (row == '1'
 											or neighbour_index == 0
-											or (neighbour_index == 1 and board.get_cell(row_index-1, col_index+1).miiniCard != None)
+											or (neighbour_index == 1 and board.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index+1] + Board.BOARD_ROWS[row_index-1]).miniCard != None)
 										):
 											if neighbour_index == 0:
 												possibleMoves.append("0 2 " + board.BOARD_COLUMNS[col_index]  + str(row_index+1))

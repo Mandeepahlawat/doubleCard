@@ -46,7 +46,7 @@ def main():
 				possibleMoves = Command.returnPossibleMoves(board, num_cards_on_board, lastCardPosition=None)
 				print(possibleMoves)
 				cmd = input("$$ ")
-				if cmd not in possibleMoves:
+				if cmd.upper() not in possibleMoves:
 					print("invalid command, try again")
 				else:
 					#check if card can be placed there, 
