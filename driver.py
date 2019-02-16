@@ -11,8 +11,6 @@ def main():
 
 	players.extend([p1,p2])
 
-	# print(str(p1.cards[0]))
-	# print(p2.cards)
 	board = Board()
 	num_moves = 0
 	num_cards_on_board = 0
@@ -33,45 +31,65 @@ def main():
 
 	game_completed = False
 
+
+	print("Do you want to read input from a file? Enter yes, to read from file")
+	read_file = input()
+	read_file = read_file.upper() == 'YES'
+	if read_file:
+		file = open('sampleCommand.txt')
+
 	while not game_completed:
 		for player in players:
 			print(str(board))
-			print("Player : %s's turn, please enter a valid command to place a card" % player.name)
-			
-			## TODO when assigninng miniCard to cell make sure to reverse the order
-			## 1 will start from bottom and not from the top, also array index starts from
-			## 0 but the rows starts from 1
-			
-			while True:	
-				possibleMoves = Command.returnPossibleMoves(board, num_cards_on_board, lastCardPosition=None)
-				print(possibleMoves)
+			possibleMoves = Command.returnPossibleMoves(board, num_cards_on_board, lastCardPosition=None)
+			print(possibleMoves)
+
+			if not read_file:
+				print("Player : %s's turn, please enter a valid command to place a card" % player.name)
 				cmd = input("$$ ")
-				if cmd.upper() not in possibleMoves:
+			else:
+				cmd = file.readline()
+				if cmd == '':
+					# end of file is reached, close the file and exit program
+					file.close()
+					exit()
+						
+			while cmd.upper().strip() not in possibleMoves:				
+				if not read_file:
+					# invalid command while manually entering values, allow user to input again
 					print("invalid command, try again")
+					cmd = input("$$ ")
 				else:
-					cell1, cell2 = board.get_cells_by_command(cmd)
-					orientation = Board.get_orientation_and_cell_position(cmd)[0]
+					# invalid command from the file, close the file and exit program
+					print("invalid command %s" % cmd)
+					file.close()
+					exit()
+				
+			cell1, cell2 = board.get_cells_by_command(cmd)
+			orientation = Board.get_orientation_and_cell_position(cmd)[0]
 
-					if cmd[0] == '0':
-						card = random.choice(player.get_empty_cards())
-					else:
-						command_list = cmd.upper().strip().split(" ")
-						prev_cell1 = board.get_cell_by_string_position(command_list[0])
-						prev_cell2 = board.get_cell_by_string_position(command_list[1])
+			if cmd[0] == '0':
+				# regular command, get a random card from player cards
+				card = random.choice(player.get_empty_cards())
+			else:
+				# recycling command, need to remove mini cards from cell and get card from the cell
+				command_list = cmd.upper().strip().split(" ")
+				prev_cell1 = board.get_cell_by_string_position(command_list[0])
+				prev_cell2 = board.get_cell_by_string_position(command_list[1])
 
-						card = prev_cell1.miniCard.card
+				card = prev_cell1.miniCard.card
 
-						prev_cell1.remove_miniCard()
-						prev_cell2.remove_miniCard()
+				prev_cell1.remove_miniCard()
+				prev_cell2.remove_miniCard()
 
-					if orientation in ['1', '4', '5', '8']:
-						cell1.set_miniCard(card.miniCard1(orientation))
-						cell2.set_miniCard(card.miniCard2(orientation))
-					else:
-						cell1.set_miniCard(card.miniCard2(orientation))
-						cell2.set_miniCard(card.miniCard1(orientation))
+			if orientation in ['1', '4', '5', '8']:
+				cell1.set_miniCard(card.miniCard1(orientation))
+				cell2.set_miniCard(card.miniCard2(orientation))
+			else:
+				cell1.set_miniCard(card.miniCard2(orientation))
+				cell2.set_miniCard(card.miniCard1(orientation))
 
-					break
+					
 
 			if board.is_game_finished(p1, p2):
 				if p1.winner and p2.winner:
@@ -85,5 +103,8 @@ def main():
 				break
 
 		print(str(board))
+
+	if read_file:
+		file.close()
 
 main()
