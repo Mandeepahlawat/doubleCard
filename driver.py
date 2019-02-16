@@ -42,13 +42,19 @@ def main():
 			## 1 will start from bottom and not from the top, also array index starts from
 			## 0 but the rows starts from 1
 			
+			cmd = ""
+			cmd_valid = True
 			while True:	
-				possibleMoves = Command.returnPossibleMoves(board, num_cards_on_board, lastCardPosition=None)
-				print(possibleMoves)
+				if cmd_valid:
+					possibleMoves = Command.returnPossibleMoves(board, num_cards_on_board, cmd)
+					print(possibleMoves)
+
 				cmd = input("$$ ")
 				if cmd.upper() not in possibleMoves:
+					cmd_valid = False
 					print("invalid command, try again")
 				else:
+					cmd_valid = True
 					cell1, cell2 = board.get_cells_by_command(cmd)
 					orientation = Board.get_orientation_and_cell_position(cmd)[0]
 
