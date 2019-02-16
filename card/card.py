@@ -2,7 +2,12 @@ from card.miniCard import MiniCard
 
 class Card:
 
+	id = 1
+
 	def __init__(self):
+		self.id = Card.id
+		Card.id += 1
+
 		mini1 = MiniCard()
 		mini1.set_color('red')
 		mini1.set_text('0')

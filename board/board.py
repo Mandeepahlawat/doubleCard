@@ -177,12 +177,12 @@ class Board:
 			output += '\n'
 			output += "|%2s|" % row
 			for col_index, col in enumerate(Board.BOARD_COLUMNS):
-				output += "|%10s|" % self.cells[row_index][col_index]
+				output += "|%15s|" % self.cells[row_index][col_index]
 
 		output += '\n'
 		output += '|  |'
 		for col in Board.BOARD_COLUMNS:
-			output += "|%10s|" % col
+			output += "|%15s|" % col
 
 
 		return output

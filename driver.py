@@ -52,6 +52,7 @@ def main():
 				if cmd == '':
 					# end of file is reached, close the file and exit program
 					file.close()
+					read_file = False
 					cmd = input("$$ ")
 					#exit()
 						
