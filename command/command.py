@@ -93,10 +93,10 @@ class Command:
 			return False
 
 	@classmethod
-	def returnPossibleMoves(cls, board, num_cards_on_board, lastCardPosition):
+	def returnPossibleMoves(cls, board, num_cards_on_board, player, lastCardPosition):
 		possibleMoves = []
 		#Regular moves
-		if num_cards_on_board < 24:
+		if len(player.get_empty_cards()) != 0:
 			for row_index, row in enumerate(Board.BOARD_ROWS):
 				for col_index, col in enumerate(Board.BOARD_COLUMNS):
 					cell = board.get_cell_by_string_position(col+row)
@@ -128,7 +128,7 @@ class Command:
 												possibleMoves.append("0 7 " + board.BOARD_COLUMNS[col_index]  + str(row_index+1))
 		else:
 			#Recycling moves											
-			#TODO	
+			#TODO
 			for row_index, row in enumerate(reversed(Board.BOARD_ROWS)):
 				for col_index, cell in enumerate(Board.BOARD_COLUMNS):
 					cell = board.cells[row_index][col_index]

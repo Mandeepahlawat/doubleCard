@@ -31,7 +31,6 @@ def main():
 
 	game_completed = False
 
-
 	print("Do you want to read input from a file? Enter yes, to read from file")
 	read_file = input()
 	read_file = read_file.upper() == 'YES'
@@ -41,7 +40,7 @@ def main():
 	while not game_completed:
 		for player in players:
 			print(str(board))
-			possibleMoves = Command.returnPossibleMoves(board, num_cards_on_board, lastCardPosition=None)
+			possibleMoves = Command.returnPossibleMoves(board, num_cards_on_board, player, lastCardPosition=None)
 			print(possibleMoves)
 
 			if not read_file:
@@ -89,8 +88,6 @@ def main():
 				cell1.set_miniCard(card.miniCard2(orientation))
 				cell2.set_miniCard(card.miniCard1(orientation))
 
-					
-
 			if board.is_game_finished(p1, p2):
 				if p1.winner and p2.winner:
 					print("Player : %s won the game" % player.name)
@@ -102,9 +99,8 @@ def main():
 				game_completed = True
 				break
 
-		print(str(board))
-
 	if read_file:
 		file.close()
+	print(str(board))
 
 main()
