@@ -93,7 +93,7 @@ class Command:
 			return False
 
 	@classmethod
-	def returnPossibleMoves(cls, board, num_cards_on_board, player, lastCardPosition):
+	def returnPossibleMoves(cls, board, num_cards_on_board, player, cmd):
 		possibleMoves = []
 		#Regular moves
 		if len(player.get_empty_cards()) != 0:
@@ -101,13 +101,13 @@ class Command:
 				for col_index, col in enumerate(Board.BOARD_COLUMNS):
 					cell = board.get_cell_by_string_position(col+row)
 					#check if cell is empty
-					if(cell.miniCard == None):
+					if cell.miniCard == None:
 						#check if the cell is not on top the empty cell
 						if row == '1' or board.get_cell_by_string_position(col + board.BOARD_ROWS[row_index-1]).miniCard != None:
 							#get all the neighbouring cells
 							neighbours = board.getNeighbouringCells(row_index, col_index)
 							for neighbour_index, neighbour in enumerate(neighbours):
-								#check if the neighbour is not out of range #(condition can cause error)
+								#check if the neighbour is not out of range
 								if neighbour != "None":
 									#check if neighbour is empty
 									if neighbour.miniCard == None:
@@ -128,14 +128,102 @@ class Command:
 												possibleMoves.append("0 7 " + board.BOARD_COLUMNS[col_index]  + str(row_index+1))
 		else:
 			#Recycling moves											
-			#TODO
-			for row_index, row in enumerate(reversed(Board.BOARD_ROWS)):
-				for col_index, cell in enumerate(Board.BOARD_COLUMNS):
-					cell = board.cells[row_index][col_index]
-					#check if cell is not empty or its not the card just placed by the other player
 
-					#### READ: uncomment this line when you are working as it causes program to not run
-					#if(cell.miniCard != None or (board.BOARD_COLUMNS[col_index]  + str(row_index+1) != lastCardPosition)):
-						#cell minicard problem how to know this card belongs to which neighbour?
+			#get the last placed or moved card on board
+			values = cmd.split(" ")
+			last_orientation = values[-2]
+			last_position1 = values[-1]
+			#last_positionY1 = values[-1:]
+			if last_orientation == '1' or last_orientation == '3' or last_orientation == '5' or last_orientation == '7':
+				last_position2 = chr(ord(last_position1[0]) + 1) + last_position1[1:]
+				#last_positionY2 = last_positionY1
+			else:
+				last_position2 = last_position1[0] + str(int(last_position1[1:]) + 1)
+				#last_positionY2 = chr(ord(last_positionY1) + 1)
 
-		return possibleMoves	
+			#add the last card placed or moved in visited
+			visited = [last_position1, last_position2]
+			#iterate over board
+			for row_index, row in enumerate(Board.BOARD_ROWS):
+				for col_index, col in enumerate(Board.BOARD_COLUMNS):
+					#if not visited
+					if col+row not in visited:
+						visited.append(col+row)
+						cell = board.get_cell_by_string_position(col+row)
+
+						#find the corresponding cell
+						corresponding_cell = None
+						corresponding_cell_orientation = None
+						#if cell is not empty
+						if cell.miniCard != None:
+							neighbours = board.getNeighbouringCells(row_index, col_index)
+							for neighbour_index, neighbour in enumerate(neighbours):
+								#check if the neighbour is not out of range
+								if neighbour != "None":
+									#check if neighbour is empty
+									if neighbour.miniCard != None:
+										#if neighbour belongs to same card
+										if cell.miniCard.card == neighbour.miniCard.card:
+											if neighbour_index == 0:
+												corresponding_cell = col + str(int(row) + 1)
+												corresponding_cell_orientation = 'even'
+											else:
+												corresponding_cell = chr(ord(col) + 1) + row
+												corresponding_cell_orientation = 'odd'
+
+						top_is_clear = False
+						if corresponding_cell != None:
+							visited.append(corresponding_cell)
+							#check if top of this card is empty
+							if str(int(corresponding_cell[1:]) + 1) == '12':
+								top_is_clear = True
+							elif corresponding_cell_orientation == 'even':
+								if (board.get_cell_by_string_position(col + str(int(row) + 2)).miniCard == None):
+									top_is_clear = True
+							elif corresponding_cell_orientation == 'odd':
+								if ((board.get_cell_by_string_position(col + str(int(row) + 1)).miniCard == None
+									and board.get_cell_by_string_position(chr(ord(col) + 1) + str(int(row) + 1)).miniCard == None)
+								):
+									top_is_clear = True
+
+						if top_is_clear:
+							moves = cls.returnPossibleMoves(board, 12, cmd)
+
+							#remove the moves that includes placing card on top of the card to be moved
+							moves_copy = moves
+							for move in moves_copy:
+								if corresponding_cell_orientation == "even":
+									if move.split(" ")[-1] == col + str(int(row) + 2):
+										moves.remove(move)
+								if corresponding_cell_orientation == "odd":
+									if (move.split(" ")[-1] == col + str(int(row) + 1)
+										or move.split(" ")[-1] == chr(ord(col) + 1) + str(int(row) + 1)
+									):
+										moves.remove(move) 
+
+							#change the regular returned commands to recycle commands
+							for move_index, move in enumerate(moves):
+									moves[move_index] = col + row + " " + corresponding_cell + move[1:]
+
+							#add this card's change in orientations as valid commands
+							if corresponding_cell_orientation == "even":
+								moves.append(col + row + " " + chr(ord(col) + 1) + row + " 1 " + col + row)
+								moves.append(col + row + " " + chr(ord(col) + 1) + row + " 3 " + col + row)
+								moves.append(col + row + " " + chr(ord(col) + 1) + row + " 5 " + col + row)
+								moves.append(col + row + " " + chr(ord(col) + 1) + row + " 7 " + col + row)
+								#remaining 3 moves			
+							elif corresponding_cell_orientation == "odd" and str(int(row) + 1) != '12':
+								moves.append(col + row + " " + col + str(int(row) + 1) + " 2 " + col + row)
+								moves.append(col + row + " " + col + str(int(row) + 1) + " 4 " + col + row)
+								moves.append(col + row + " " + col + str(int(row) + 1) + " 6 " + col + row)
+								moves.append(col + row + " " + col + str(int(row) + 1) + " 8 " + col + row)
+								#remaining 3 moves
+							elif corresponding_cell_orientation == "odd":
+								#remaining 3 moves
+								print()
+							
+							possibleMoves.extend(moves)
+
+								
+
+		return possibleMoves

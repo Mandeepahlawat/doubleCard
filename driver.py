@@ -37,10 +37,11 @@ def main():
 	if read_file:
 		file = open('sampleCommand.txt')
 
+	cmd = ''
 	while not game_completed:
 		for player in players:
 			print(str(board))
-			possibleMoves = Command.returnPossibleMoves(board, num_cards_on_board, player, lastCardPosition=None)
+			possibleMoves = Command.returnPossibleMoves(board, num_cards_on_board, player, cmd)
 			print(possibleMoves)
 
 			if not read_file:
