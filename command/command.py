@@ -187,7 +187,7 @@ class Command:
 									top_is_clear = True
 
 						if top_is_clear:
-							moves = cls.returnPossibleMoves(board, 12, cmd)
+							moves = cls.returnPossibleMoves(board, 12, player, cmd)
 
 							#remove the moves that includes placing card on top of the card to be moved
 							moves_copy = moves
