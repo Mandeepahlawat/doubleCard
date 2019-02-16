@@ -41,7 +41,7 @@ def main():
 	while not game_completed:
 		for player in players:
 			print(str(board))
-			possibleMoves = Command.returnPossibleMoves(board, num_cards_on_board, player, cmd)
+			possibleMoves = Command.returnPossibleMoves(board, player, cmd)
 			print(possibleMoves)
 
 			if not read_file:
@@ -52,7 +52,8 @@ def main():
 				if cmd == '':
 					# end of file is reached, close the file and exit program
 					file.close()
-					exit()
+					cmd = input("$$ ")
+					#exit()
 						
 			while cmd.upper().strip() not in possibleMoves:				
 				if not read_file:

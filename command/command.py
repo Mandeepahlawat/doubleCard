@@ -93,10 +93,10 @@ class Command:
 			return False
 
 	@classmethod
-	def returnPossibleMoves(cls, board, num_cards_on_board, player, cmd):
+	def returnPossibleMoves(cls, board, player, cmd, recycle=False):
 		possibleMoves = []
 		#Regular moves
-		if len(player.get_empty_cards()) != 0:
+		if len(player.get_empty_cards()) != 0 or recycle == True:
 			for row_index, row in enumerate(Board.BOARD_ROWS):
 				for col_index, col in enumerate(Board.BOARD_COLUMNS):
 					cell = board.get_cell_by_string_position(col+row)
@@ -187,7 +187,7 @@ class Command:
 									top_is_clear = True
 
 						if top_is_clear:
-							moves = cls.returnPossibleMoves(board, 12, player, cmd)
+							moves = cls.returnPossibleMoves(board, player, cmd, True)
 
 							#remove the moves that includes placing card on top of the card to be moved
 							moves_copy = moves
