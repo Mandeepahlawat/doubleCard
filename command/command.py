@@ -134,7 +134,7 @@ class Command:
 			last_orientation = values[-2]
 			last_position1 = values[-1]
 			#last_positionY1 = values[-1:]
-			if last_orientation == '1' or last_orientation == '3' or last_orientation == '5' or last_orientation == '7':
+			if last_orientation in ['1', '3', '5', '7']:
 				last_position2 = chr(ord(last_position1[0]) + 1) + last_position1[1:]
 				#last_positionY2 = last_positionY1
 			else:
@@ -190,10 +190,12 @@ class Command:
 							moves = cls.returnPossibleMoves(board, player, cmd, True)
 
 							#remove the moves that includes placing card on top of the card to be moved
-							moves_copy = moves
+							moves_copy = moves[:]
 							for move in moves_copy:
 								if corresponding_cell_orientation == "even":
 									if move.split(" ")[-1] == col + str(int(row) + 2):
+										moves.remove(move)
+									if move.split(" ")[-1] == chr(ord(col) - 1) + str(int(row) + 2) and move.split(" ")[-2] in ['1','3','5','7']:
 										moves.remove(move)
 								if corresponding_cell_orientation == "odd":
 									if (move.split(" ")[-1] == col + str(int(row) + 1)
