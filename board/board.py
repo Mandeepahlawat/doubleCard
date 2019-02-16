@@ -38,7 +38,7 @@ class Board:
 	# return cells row and col indices based on position like A2
 	def get_cell_index_by_string_position(self, position):
 		col_index = Board.BOARD_COLUMNS.index(position[0])
-		row_index = Board.BOARD_ROWS_TO_INDEX[position[1]]
+		row_index = Board.BOARD_ROWS_TO_INDEX[position[1:]]
 		return (col_index, row_index)
 
 	# def get_column(self, index):
