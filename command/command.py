@@ -130,7 +130,7 @@ class Command:
 			#Recycling moves											
 
 			#get the last placed or moved card on board
-			values = cmd.split(" ")
+			values = cmd.strip().upper().split(" ")
 			last_orientation = values[-2]
 			last_position1 = values[-1]
 			#last_positionY1 = values[-1:]
@@ -225,7 +225,7 @@ class Command:
 									moves.append(col + row + " " + corresponding_cell + " " + orientation + " " + col + row)
 
 							elif corresponding_cell_orientation == "odd":
-								if str(int(row) + 1) != '12':
+								if row != '12':
 									moves.append(col + row + " " + corresponding_cell + " 2 " + col + row)
 									moves.append(col + row + " " + corresponding_cell + " 4 " + col + row)
 									moves.append(col + row + " " + corresponding_cell + " 6 " + col + row)
