@@ -21,12 +21,12 @@ class Cell:
 	def set_player(self, player):
 		self.player = player
 
-	def set_miniCard(self, mini_card):
+	def set_miniCard(self, mini_card, orientation):
 		self.miniCard = mini_card
 		mini_card.cell = self
 		self.set_player(mini_card.card.player)
 		mini_card.card.placed_on_board = True
-		# self.miniCard.set_cell(self)
+		mini_card.card.orientation = orientation
 
 	def remove_miniCard(self):
 		mini_card = self.miniCard

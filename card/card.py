@@ -30,6 +30,7 @@ class Card:
 
 		self.mini_cards = [mini1, mini2, mini3, mini4]
 		self.placed_on_board = False
+		self.orientation = None
 
 
 
