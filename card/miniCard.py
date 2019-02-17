@@ -20,4 +20,4 @@ class MiniCard:
 		self.card.placed_on_board = True
 
 	def __str__(self):
-		return "%s(%s)(%s)" % (self.text, self.color, self.card.id)
+		return "%s(%s)(%s/%s)" % (self.text, self.color, self.card.id, self.card.orientation)
