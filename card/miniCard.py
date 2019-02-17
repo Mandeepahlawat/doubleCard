@@ -21,4 +21,4 @@ class MiniCard:
 		# self.cell.set_miniCard(self) 
 
 	def __str__(self):
-		return "%s(%s)" % (self.text, self.color)
+		return "%s(%s)(%s)" % (self.text, self.color, self.card.id)
