@@ -209,10 +209,12 @@ class Command:
 
 							#add this card's change in orientations as valid commands
 							if corresponding_cell_orientation == "even":
-								moves.append(col + row + " " + chr(ord(col) + 1) + row + " 1 " + col + row)
-								moves.append(col + row + " " + chr(ord(col) + 1) + row + " 3 " + col + row)
-								moves.append(col + row + " " + chr(ord(col) + 1) + row + " 5 " + col + row)
-								moves.append(col + row + " " + chr(ord(col) + 1) + row + " 7 " + col + row)
+								if board.get_cell_by_string_position(chr(ord(col) + 1) + row).miniCard != None:
+									moves.append(col + row + " " + chr(ord(col) + 1) + row + " 1 " + col + row)
+									moves.append(col + row + " " + chr(ord(col) + 1) + row + " 3 " + col + row)
+									moves.append(col + row + " " + chr(ord(col) + 1) + row + " 5 " + col + row)
+									moves.append(col + row + " " + chr(ord(col) + 1) + row + " 7 " + col + row)
+								
 								#remaining 3 moves			
 							elif corresponding_cell_orientation == "odd" and str(int(row) + 1) != '12':
 								moves.append(col + row + " " + col + str(int(row) + 1) + " 2 " + col + row)
