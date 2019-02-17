@@ -210,6 +210,7 @@ class Command:
 
 							#add this card's change in orientations as valid commands
 							if corresponding_cell_orientation == "even":
+
 								if col != 'H':
 									if (board.get_cell_by_string_position(chr(ord(col) + 1) + row).miniCard == None
 										and board.get_cell_by_string_position(chr(ord(col) + 1) + str(int(row) - 1)).miniCard != None
@@ -230,6 +231,27 @@ class Command:
 									moves.append(col + row + " " + corresponding_cell + " 4 " + col + row)
 									moves.append(col + row + " " + corresponding_cell + " 6 " + col + row)
 									moves.append(col + row + " " + corresponding_cell + " 8 " + col + row)
+								
+								arr = ['1','3','5','7']
+								arr.remove(cell_orientation)
+								for orientation in arr:
+									moves.append(col + row + " " + corresponding_cell + " " + orientation + " " + col + row)
+
+							
+							possibleMoves.extend(moves)
+						
+						else:
+
+							moves = []
+							#add this card's change in orientations as valid commands
+							if corresponding_cell_orientation == "even":
+	
+								arr = ['2','4','6','8']
+								arr.remove(cell_orientation)
+								for orientation in arr:
+									moves.append(col + row + " " + corresponding_cell + " " + orientation + " " + col + row)
+
+							elif corresponding_cell_orientation == "odd":
 								
 								arr = ['1','3','5','7']
 								arr.remove(cell_orientation)
