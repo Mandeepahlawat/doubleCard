@@ -156,6 +156,7 @@ class Command:
 						corresponding_cell_orientation = None
 						#if cell is not empty
 						if cell.miniCard != None:
+							cell_orientation = cell.miniCard.card.orientation
 							neighbours = board.getNeighbouringCells(row_index, col_index)
 							for neighbour_index, neighbour in enumerate(neighbours):
 								#check if the neighbour is not out of range
@@ -210,21 +211,28 @@ class Command:
 							#add this card's change in orientations as valid commands
 							if corresponding_cell_orientation == "even":
 								if board.get_cell_by_string_position(chr(ord(col) + 1) + row).miniCard != None:
-									moves.append(col + row + " " + chr(ord(col) + 1) + row + " 1 " + col + row)
-									moves.append(col + row + " " + chr(ord(col) + 1) + row + " 3 " + col + row)
-									moves.append(col + row + " " + chr(ord(col) + 1) + row + " 5 " + col + row)
-									moves.append(col + row + " " + chr(ord(col) + 1) + row + " 7 " + col + row)
-								
-								#remaining 3 moves			
-							elif corresponding_cell_orientation == "odd" and str(int(row) + 1) != '12':
-								moves.append(col + row + " " + col + str(int(row) + 1) + " 2 " + col + row)
-								moves.append(col + row + " " + col + str(int(row) + 1) + " 4 " + col + row)
-								moves.append(col + row + " " + col + str(int(row) + 1) + " 6 " + col + row)
-								moves.append(col + row + " " + col + str(int(row) + 1) + " 8 " + col + row)
-								#remaining 3 moves
+									moves.append(col + row + " " + corresponding_cell + " 1 " + col + row)
+									moves.append(col + row + " " + corresponding_cell + " 3 " + col + row)
+									moves.append(col + row + " " + corresponding_cell + " 5 " + col + row)
+									moves.append(col + row + " " + corresponding_cell + " 7 " + col + row)
+	
+								arr = ['2','4','6','8']
+								arr.remove(cell_orientation)
+								for orientation in arr:
+									moves.append(col + row + " " + corresponding_cell + " " + orientation + " " + col + row)
+
 							elif corresponding_cell_orientation == "odd":
-								#remaining 3 moves
-								print()
+								if str(int(row) + 1) != '12':
+									moves.append(col + row + " " + corresponding_cell + " 2 " + col + row)
+									moves.append(col + row + " " + corresponding_cell + " 4 " + col + row)
+									moves.append(col + row + " " + corresponding_cell + " 6 " + col + row)
+									moves.append(col + row + " " + corresponding_cell + " 8 " + col + row)
+								
+								arr = ['1','3','5','7']
+								arr.remove(cell_orientation)
+								for orientation in arr:
+									moves.append(col + row + " " + corresponding_cell + " " + orientation + " " + col + row)
+
 							
 							possibleMoves.extend(moves)
 
