@@ -18,8 +18,7 @@ def main():
 	
 	#set strategy
 	while True:
-		#value = input("Enter player1's strategy (dots or color)\n")
-		value = 'dots'
+		value = input("Enter player1's strategy (dots or color)\n")
 		if value == 'dots':
 			p1.strategy = value
 			p2.value = 'color'
@@ -42,7 +41,7 @@ def main():
 		for player in players:
 			print(str(board))
 			possibleMoves = Command.returnPossibleMoves(board, player, cmd)
-			print(possibleMoves)
+			# print(possibleMoves)
 
 			if not read_file:
 				print("Player : %s's turn, please enter a valid command to place a card" % player.name)
@@ -53,6 +52,7 @@ def main():
 					# end of file is reached, close the file and exit program
 					file.close()
 					read_file = False
+					print("Player : %s's turn, please enter a valid command to place a card" % player.name)
 					cmd = input("$$ ")
 					#exit()
 						

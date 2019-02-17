@@ -48,19 +48,3 @@ class Card:
 			return self.mini_cards[3]
 		else:
 			return self.mini_cards[1]
-
-	# def flip_color(self):
-	# 	if self.miniCard1.color == 'red':
-	# 		self.miniCard1.set_color('white')
-	# 	else:
-	# 		self.miniCard1.set_color('red')
-
-	# def flip_text(self):
-	# 	if self.miniCard1.text == '0':
-	# 		self.miniCard1.set_color('O')
-	# 	else:
-	# 		self.miniCard1.set_color('0')
-
-	# def __str__(self):
-	# 	mini1 = self.mini_cards[0]
-	# 	return "[%s, %s]" % (str(self.miniCard1), str(self.miniCard2))

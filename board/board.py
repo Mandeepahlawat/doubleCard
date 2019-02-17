@@ -41,9 +41,6 @@ class Board:
 		row_index = Board.BOARD_ROWS_TO_INDEX[position[1:]]
 		return (col_index, row_index)
 
-	# def get_column(self, index):
-	# 	return [row[index] for row in self.cells]
-
 	def get_row_column_diagonals(self):
 		col_len = len(self.cells)
 		row_len = len(self.cells[0])
@@ -131,39 +128,30 @@ class Board:
 	def getNeighbouringCells(self, row_index, col_index):
 		neighbours = []
 		if row_index == 0 and col_index == 0:
-			#neighbours.append("None")
 			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index] + Board.BOARD_ROWS[row_index+1]))
 			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index+1] + Board.BOARD_ROWS[row_index]))
 		elif row_index == 11 and col_index == 7:
-			#neighbours.append(self.get_cell(row_index, col_index-1))
 			neighbours.append("None")
 			neighbours.append("None")
 		elif row_index == 0 and col_index == 7:
-			#neighbours.append(self.get_cell(row_index, col_index-1))
 			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index] + Board.BOARD_ROWS[row_index+1]))
 			neighbours.append("None")
 		elif row_index == 11 and col_index == 0:
-			#neighbours.append("None")
 			neighbours.append("None")
 			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index+1] + Board.BOARD_ROWS[row_index]))
 		elif row_index == 0:
-			#neighbours.append(self.get_cell(row_index, col_index-1))
 			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index] + Board.BOARD_ROWS[row_index+1]))
 			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index+1] + Board.BOARD_ROWS[row_index]))
 		elif col_index == 0:
-			#neighbours.append("None")
 			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index] + Board.BOARD_ROWS[row_index+1]))
 			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index+1] + Board.BOARD_ROWS[row_index]))
 		elif row_index == 11:
-			#neighbours.append(self.get_cell(row_index, col_index-1))
 			neighbours.append("None")
 			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index+1] + Board.BOARD_ROWS[row_index]))
 		elif col_index == 7:
-			#neighbours.append(self.get_cell(row_index, col_index-1))
 			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index] + Board.BOARD_ROWS[row_index+1]))
 			neighbours.append("None")
 		else:
-			#neighbours.append(self.get_cell(row_index, col_index-1))
 			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index] + Board.BOARD_ROWS[row_index+1]))
 			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index+1] + Board.BOARD_ROWS[row_index]))
 		
