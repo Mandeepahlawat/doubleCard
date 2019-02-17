@@ -85,11 +85,11 @@ def main():
 				prev_cell2.remove_miniCard()
 
 			if orientation in ['1', '4', '5', '8']:
-				cell1.set_miniCard(card.miniCard1(orientation))
-				cell2.set_miniCard(card.miniCard2(orientation))
+				cell1.set_miniCard(card.miniCard1(orientation), orientation)
+				cell2.set_miniCard(card.miniCard2(orientation), orientation)
 			else:
-				cell1.set_miniCard(card.miniCard2(orientation))
-				cell2.set_miniCard(card.miniCard1(orientation))
+				cell1.set_miniCard(card.miniCard2(orientation), orientation)
+				cell2.set_miniCard(card.miniCard1(orientation), orientation)
 
 			if board.is_game_finished(p1, p2):
 				if p1.winner and p2.winner:
