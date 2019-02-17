@@ -12,9 +12,6 @@ def main():
 	players.extend([p1,p2])
 
 	board = Board()
-	num_moves = 0
-	num_cards_on_board = 0
-
 	
 	#set strategy
 	while True:
@@ -45,22 +42,22 @@ def main():
 
 			if not read_file:
 				print("Player : %s's turn, please enter a valid command to place a card" % player.name)
-				cmd = input("$$ ")
+				cmd = input("$$ ").strip().upper()
 			else:
-				cmd = file.readline()
+				cmd = file.readline().strip().upper()
 				if cmd == '':
 					# end of file is reached, close the file and exit program
 					file.close()
 					read_file = False
 					print("Player : %s's turn, please enter a valid command to place a card" % player.name)
-					cmd = input("$$ ")
+					cmd = input("$$ ").strip().upper()
 					#exit()
 						
-			while cmd.upper().strip() not in possibleMoves:				
+			while cmd not in possibleMoves:				
 				if not read_file:
 					# invalid command while manually entering values, allow user to input again
 					print("invalid command, try again")
-					cmd = input("$$ ")
+					cmd = input("$$ ").strip().upper()
 				else:
 					# invalid command from the file, close the file and exit program
 					print("invalid command %s" % cmd)

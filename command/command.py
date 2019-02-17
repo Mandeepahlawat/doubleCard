@@ -150,7 +150,7 @@ class Command:
 
 						
 						possibleMoves.extend(moves)
-					
+					'''
 					else:
 						moves = []
 						#add this card's change in orientations as valid commands
@@ -170,6 +170,7 @@ class Command:
 
 						
 						possibleMoves.extend(moves)
+						'''
 
 		return possibleMoves
 
