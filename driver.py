@@ -16,13 +16,26 @@ def main():
 	#set strategy
 	while True:
 		value = input("Enter player1's strategy (dots or color)\n")
+		is_human = input("Is player1 human? Enter yes or no\n")
 		if value == 'dots':
 			p1.strategy = value
 			p2.value = 'color'
+			if is_human.upper() == "YES":
+				p1.is_human = True
+				p2.is_human = False
+			else:
+				p1.is_human = False
+				p2.is_human = True
 			break
 		elif value == 'color':
 			p1.strategy = value
 			p2.value = 'dots'
+			if is_human.upper() == "YES":
+				p1.is_human = True
+				p2.is_human = False
+			else:
+				p1.is_human = False
+				p2.is_human = True
 			break
 
 	game_completed = False
@@ -41,17 +54,28 @@ def main():
 			# print(possibleMoves)
 
 			if not read_file:
-				print("Player : %s's turn, please enter a valid command to place a card" % player.name)
-				cmd = input("$$ ").strip().upper()
+				if player.is_human:
+					print("Player : %s's turn, please enter a valid command to place a card" % player.name)
+					cmd = input("$$ ").strip().upper()
+				else:
+					#player is AI and we need to find appropriate command automatically for AI player
+
+					## TODO: replace this with value using minimax
+					cmd = random.choice(possibleMoves)
 			else:
 				cmd = file.readline().strip().upper()
 				if cmd == '':
 					# end of file is reached, close the file and exit program
 					file.close()
 					read_file = False
-					print("Player : %s's turn, please enter a valid command to place a card" % player.name)
-					cmd = input("$$ ").strip().upper()
-					#exit()
+					if player.is_human:
+						print("Player : %s's turn, please enter a valid command to place a card" % player.name)
+						cmd = input("$$ ").strip().upper()
+					else:
+						#player is AI and we need to find appropriate command automatically for AI player
+
+						## TODO: replace this with value using minimax
+						cmd = random.choice(possibleMoves)
 						
 			while cmd not in possibleMoves:				
 				if not read_file:

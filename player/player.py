@@ -7,6 +7,7 @@ class Player:
 		self.cards = []
 		self.assign_cards()
 		self.winner = False
+		self.is_human = True
 	
 	def setPlayerStrategy(self, strategy):
 		self.strategy = strategy
