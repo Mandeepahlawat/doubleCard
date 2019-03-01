@@ -1,4 +1,5 @@
-from board.cell import Cell 
+from board.cell import Cell
+import random
 
 class Board:
 
@@ -156,6 +157,39 @@ class Board:
 			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index+1] + Board.BOARD_ROWS[row_index]))
 		
 		return neighbours
+
+	# play a move on board
+	def play_move(self, cmd, player):
+		cell1, cell2 = self.get_cells_by_command(cmd)
+		orientation = Board.get_orientation_and_cell_position(cmd)[0]
+
+		if cmd[0] == '0':
+			# regular command, get a random card from player cards
+			card = random.choice(player.get_empty_cards())
+		else:
+			# recycling command, need to remove mini cards from cell and get card from the cell
+			command_list = cmd.upper().strip().split(" ")
+			prev_cell1 = self.get_cell_by_string_position(command_list[0])
+			prev_cell2 = self.get_cell_by_string_position(command_list[1])
+
+			card = prev_cell1.miniCard.card
+
+			prev_cell1.remove_miniCard()
+			prev_cell2.remove_miniCard()
+
+		if orientation in ['1', '4', '5', '8']:
+			cell1.set_miniCard(card.miniCard1(orientation), orientation)
+			cell2.set_miniCard(card.miniCard2(orientation), orientation)
+		else:
+			cell1.set_miniCard(card.miniCard2(orientation), orientation)
+			cell2.set_miniCard(card.miniCard1(orientation), orientation)
+
+	# undo a move, remove mini card from cells
+	def undo_move(self, cmd):
+		cell1, cell2 = self.get_cells_by_command(cmd)
+		card = cell1.miniCard.card
+		cell1.remove_miniCard()
+		cell2.remove_miniCard()
 		
 
 	def __str__(self):
