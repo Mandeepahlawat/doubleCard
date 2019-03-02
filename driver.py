@@ -16,6 +16,7 @@ def main():
 	
 	#set strategy
 	value = input("Enter player1's strategy (dots or color)\n")
+	
 	while value.upper() not in ["DOTS", "COLOR"]:
 		value = input("Enter player1's strategy (dots or color)\n")
 	
@@ -35,13 +36,27 @@ def main():
 
 	game_completed = False
 
-	print("Do you want to read input from a file? Enter yes, to read from file")
-	read_file = input()
+	is_alptha_beat = input("Do you want to use alpha beta?\n")
+	if is_alptha_beat.upper() == "YES":
+		is_alptha_beat = True
+	else:
+		is_alptha_beat = False
+
+	read_file = input("Do you want to read input from a file? Enter yes, to read from file\n")
 	read_file = read_file.upper() == 'YES'
 	if read_file:
 		file = open('sampleCommand.txt')
 
+
+	new_file = None
+	trace_result = input("Do you want to trace the result?\n")
+	trace_result = trace_result.upper() == 'YES'
+	if trace_result:
+		new_file_name = input("enter file name\n")
+		new_file = open(new_file_name, "w")
+
 	cmd = ''
+	score = None
 	while not game_completed:
 		for player in players:
 			print(str(board))
@@ -54,9 +69,12 @@ def main():
 					cmd = input("$$ ").strip().upper()
 				else:
 					#player is AI and we need to find appropriate command automatically for AI player
-
-					## TODO: replace this with value using minimax
-					cmd = player.minimax(board, DEPTH_LEVEL, cmd, players)[0]
+					cmd, score = player.minimax(board, DEPTH_LEVEL, cmd, players, is_alptha_beat)
+					new_file.write("%s\n"%Player.EN_LEVEL_3_COUNT)
+					new_file.write("%s"%score)
+					new_file.write("\n")
+					for en in Player.EN_LEVEL_2_LIST:
+						new_file.write("\n%s"%en)
 			else:
 				cmd = file.readline().strip().upper()
 				if cmd == '':
@@ -70,7 +88,12 @@ def main():
 						#player is AI and we need to find appropriate command automatically for AI player
 
 						## TODO: replace this with value using minimax
-						cmd = player.minimax(board, DEPTH_LEVEL, cmd, players)[0]
+						cmd, score = player.minimax(board, DEPTH_LEVEL, cmd, players, is_alptha_beat)
+						new_file.write("%s\n"%Player.EN_LEVEL_3_COUNT)
+						new_file.write("%s"%score)
+						new_file.write("\n")
+						for en in Player.EN_LEVEL_2_LIST:
+							new_file.write("\n%s"%en)
 						
 			while cmd not in possibleMoves:				
 				if not read_file:
@@ -98,6 +121,8 @@ def main():
 
 	if read_file:
 		file.close()
+	if new_file:
+		new_file.close()
 	print(str(board))
 
 main()
