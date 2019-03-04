@@ -216,3 +216,29 @@ class Board:
 
 
 		return output
+
+
+	def compute_EN(self):
+		whiteO = 0
+		redO = 0
+		white0 = 0
+		red0 = 0
+		for row_index, row in enumerate(Board.BOARD_ROWS):
+			for col_index, col in enumerate(Board.BOARD_COLUMNS, 1):
+				cell = self.get_cell_by_string_position(col+row)
+				if cell.miniCard != None:
+					if(cell.miniCard.color == 'white' and cell.miniCard.text == 'O'):
+						whiteO+=(10*row_index) + col_index
+					if(cell.miniCard.color == 'red' and cell.miniCard.text == 'O'):
+						redO+=(10*row_index) + col_index
+					if(cell.miniCard.color == 'white' and cell.miniCard.text == '0'):
+						white0+=(10*row_index) + col_index
+					if(cell.miniCard.color == 'red' and cell.miniCard.text == '0'):
+						red0+=(10*row_index) + col_index
+
+		score = whiteO + (3*white0) - (2*red0) - (1.5*redO)	
+		score = round(score, 1)	
+		return score
+
+
+		

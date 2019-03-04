@@ -57,15 +57,15 @@ class Player:
 		# import pdb; pdb.set_trace()
 		if depth == 0 or board.is_game_finished(self, other_player):
 			# TODO: replace this with the actual heuristic value
-			score = Player.SAMPLE_ALPHA_BETA[Player.ALPHA_BETA_COUNTER]
+			score = board.compute_EN()
 			Player.ALPHA_BETA_COUNTER += 1
 			Player.EN_LEVEL_3_COUNT += 1
 			return [cmd, score]
 
 		# use this for testing
-		for move in Command.returnPossibleMoves(board, self, cmd)[0:2]:
+		#for move in Command.returnPossibleMoves(board, self, cmd)[0:2]:
 			#print("===== %s, parent : %s =====" % (move, cmd))
-		#for move in Command.returnPossibleMoves(board, self, cmd):
+		for move in Command.returnPossibleMoves(board, self, cmd):
 			# import pdb; pdb.set_trace()
 			if not node.prune:
 				board.play_move(move, self, node)
