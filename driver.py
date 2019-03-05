@@ -12,7 +12,7 @@ def main():
 
 	board = Board()
 
-	DEPTH_LEVEL = 3
+	DEPTH_LEVEL = 5
 	
 	#set strategy
 	value = input("Enter player1's strategy (dots or color)\n")
@@ -57,7 +57,12 @@ def main():
 
 	cmd = ''
 	score = None
+
+	# using this counter intelligently to print spaces in trace file
+	counter = 0
 	while not game_completed:
+		Player.EN_LEVEL_3_COUNT = 0
+		Player.EN_LEVEL_2_LIST = []
 		for player in players:
 			print(str(board))
 			possibleMoves = Command.returnPossibleMoves(board, player, cmd)
@@ -70,11 +75,16 @@ def main():
 				else:
 					#player is AI and we need to find appropriate command automatically for AI player
 					cmd, score = player.minimax(board, DEPTH_LEVEL, cmd, players, is_alptha_beat)
-					new_file.write("%s\n"%Player.EN_LEVEL_3_COUNT)
-					new_file.write("%s"%score)
-					new_file.write("\n")
-					for en in Player.EN_LEVEL_2_LIST:
-						new_file.write("\n%s"%en)
+					if not player.is_human:
+						
+						if counter != 0:
+							new_file.write("\n\n")
+
+						new_file.write("%s\n"%Player.EN_LEVEL_3_COUNT)
+						new_file.write("%s"%score)
+						new_file.write("\n")
+						for en in Player.EN_LEVEL_2_LIST:
+							new_file.write("\n%s"%en)
 			else:
 				cmd = file.readline().strip().upper()
 				if cmd == '':
@@ -89,11 +99,16 @@ def main():
 
 						## TODO: replace this with value using minimax
 						cmd, score = player.minimax(board, DEPTH_LEVEL, cmd, players, is_alptha_beat)
-						new_file.write("%s\n"%Player.EN_LEVEL_3_COUNT)
-						new_file.write("%s"%score)
-						new_file.write("\n")
-						for en in Player.EN_LEVEL_2_LIST:
-							new_file.write("\n%s"%en)
+						
+						if not player.is_human:
+							if counter != 0:
+								new_file.write("\n\n")
+
+							new_file.write("%s\n"%Player.EN_LEVEL_3_COUNT)
+							new_file.write("%s"%score)
+							new_file.write("\n")
+							for en in Player.EN_LEVEL_2_LIST:
+								new_file.write("\n%s"%en)
 						
 			while cmd not in possibleMoves:				
 				if not read_file:
@@ -118,6 +133,8 @@ def main():
 
 				game_completed = True
 				break
+		# increase counter so need to print empty spaces above
+		counter += 1
 
 	if read_file:
 		file.close()
