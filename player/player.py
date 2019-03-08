@@ -55,7 +55,7 @@ class Player:
 			node.best = [None, -math.inf]
 
 		# import pdb; pdb.set_trace()
-		if depth == 0 or board.is_game_finished(self, other_player):
+		if depth == 0: #or board.is_game_finished(self, other_player):
 			# TODO: replace this with the actual heuristic value
 			score = board.compute_EN()
 			Player.ALPHA_BETA_COUNTER += 1
@@ -65,13 +65,12 @@ class Player:
 		# use this for testing
 		#for move in Command.returnPossibleMoves(board, self, cmd)[0:2]:
 			#print("===== %s, parent : %s =====" % (move, cmd))
-		for move in Command.returnPossibleMoves(board, self, cmd):
+		for move in Command.returnPossibleMoves(board, self, cmd)[0:2]:
 			# import pdb; pdb.set_trace()
 			if not node.prune:
 				board.play_move(move, self, node)
 				next_move, score = other_player.minimax(board, depth - 1, move, players, is_alpha_beta, node)
 				board.undo_move(move, node.previous_orientation)
-				# import pdb; pdb.set_trace()
 				
 				if not node.prune:
 					if is_alpha_beta:
@@ -93,9 +92,18 @@ class Player:
 									self.append_en_values(depth, score, node)
 									# prune nodes till parent
 									node.prune = True
+									node.prune_score = parent_score
+									node.best = [move, score]
 									for prune_node in parent_node_array:
-										prune_node.prune = True
-										prune_node.prune_score = parent_score
+										
+										if prune_node != parent_node:
+											prune_node.best = [node.move, score]
+
+										if (parent_node.player.is_human and prune_node.player.is_human) or (not parent_node.player.is_human and not prune_node.player.is_human):
+											break
+										else:
+											prune_node.prune = True
+											prune_node.prune_score = parent_score
 								else:
 									if self.is_human:
 										if score < node.best[1]:
@@ -110,9 +118,18 @@ class Player:
 									self.append_en_values(depth, score, node)
 									# prune nodes
 									node.prune = True
+									node.prune_score = parent_score
+									node.best = [move, score]
 									for prune_node in parent_node_array:
-										prune_node.prune = True
-										prune_node.prune_score = parent_score
+										
+										if prune_node != parent_node:
+											prune_node.best = [node.move, score]
+
+										if (parent_node.player.is_human and prune_node.player.is_human) or (not parent_node.player.is_human and not prune_node.player.is_human):
+											break
+										else:
+											prune_node.prune = True
+											prune_node.prune_score = parent_score
 								else:
 									if self.is_human:
 										if score < node.best[1]:
@@ -146,7 +163,8 @@ class Player:
 					# this node is pruned and shouldn't be evaluated
 					#node.best = [None, node.prune_score]
 			else:
-				print("======= parent node %s and pruned move %s =====\n" % (node.move, move))
+				print("======= parent node %s and pruned move %s ===== %s\n" % (node.move, move, node.best))
+				break
 				# this node is pruned and shouldn't be evaluated
 				#node.best = [None, node.prune_score]
 
