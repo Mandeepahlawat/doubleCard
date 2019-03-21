@@ -15,18 +15,6 @@ def main():
 
 	DEPTH_LEVEL = 3
 	GAME_DRAW_COUNT = 40
-	
-	#set strategy
-	value = input("Enter player1's strategy (dots or color)\n")
-	
-	while value.upper() not in ["DOTS", "COLOR"]:
-		value = input("Enter player1's strategy (dots or color)\n")
-	
-	p1.strategy = value
-	if value == 'dots':
-		p2.strategy = 'color'
-	else:
-		p2.strategy = 'dots'
 
 	# set if player is human or AI
 	is_human = input("Is player1 human? Enter yes or no\n")
@@ -36,6 +24,27 @@ def main():
 	else:
 		p1.is_human = False
 		p2.is_human = True
+	
+	#set strategy
+	if p1.is_human:
+		value = input("Enter player1's strategy (dots or color)\n")
+		
+		while value.upper() not in ["DOTS", "COLOR"]:
+			value = input("Enter player1's strategy (dots or color)\n")
+	else:
+		value = "color"
+		print("Player1 choosen strategy %s \n" % p1.strategy)
+	
+	p1.strategy = value
+	if value == 'dots':
+		p2.strategy = 'color'
+	else:
+		p2.strategy = 'dots'
+
+	if p1.is_human:
+		board.ai_strategy = p2.strategy
+	else:
+		board.ai_strategy = p1.strategy
 
 	game_completed = False
 
