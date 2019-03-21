@@ -453,7 +453,9 @@ class Board:
 
 
 	def calculate_adjusted_streak_value(self, row):
-		value = 0
+		return_value = 0
+		return_color_value = 0
+		return_dots_value = 0
 		target_cell = row[3]
 		streak_color_break = False
 		streak_dots_break = False
@@ -483,10 +485,10 @@ class Board:
 
 		if row[2] is not None:
 			if row[3].text() ==  row[2].text():
-				value+=(Board.HEURISTIC_FACTOR_DOTS*self.streak_value(previous_dots_streak_left))
+				return_dots_value+=(Board.HEURISTIC_FACTOR_DOTS*self.streak_value(previous_dots_streak_left))
 				new_dots_streak+=previous_dots_streak_left
 			if row[3].color() ==  row[2].color():
-				value-=(Board.HEURISTIC_FACTOR_COLOR*self.streak_value(previous_color_streak_left))
+				return_color_value+=(Board.HEURISTIC_FACTOR_COLOR*self.streak_value(previous_color_streak_left))
 				new_color_streak+=previous_color_streak_left
 
 		#right side of target
@@ -507,50 +509,49 @@ class Board:
 			else:
 				streak_color_break = True
 				streak_dots_break = True
-
-		
 		
 		if row[4] is not None:
 			if row[3].text() ==  row[4].text():
-				value+=(Board.HEURISTIC_FACTOR_DOTS*self.streak_value(previous_dots_streak_right))
+				return_dots_value+=(Board.HEURISTIC_FACTOR_DOTS*self.streak_value(previous_dots_streak_right))
 				#handling the case so that the same cell doesnt get included twice
 				if new_dots_streak != 1:
 					new_dots_streak-=1
 				new_dots_streak+=previous_dots_streak_right
 			if row[3].color() ==  row[4].color():
-				if self.ai_strategy == 'color':
-					value-=(Board.HEURISTIC_FACTOR_COLOR*self.streak_value(previous_color_streak_right))
-				else:
-					value+=(Board.HEURISTIC_FACTOR_COLOR*self.streak_value(previous_color_streak_right))
+				return_color_value+=(Board.HEURISTIC_FACTOR_COLOR*self.streak_value(previous_color_streak_right))
 				if new_color_streak != 1:
 					new_color_streak-=1
 				new_color_streak+=previous_color_streak_right
 
+		if self.ai_strategy == 'color':
+			return_value-+return_color_value
+			return_value+=return_dots_value
+		else:
+			return_value+=return_color_value
+			return_value-=return_dots_value
+			
+		return_color_value = 0
+		return_dots_value = 0
+
+
 		if new_dots_streak != 1:
-			if self.ai_strategy == 'color':
-				value-=(Board.HEURISTIC_FACTOR_DOTS*self.streak_value(new_dots_streak))
-			else:
-				value+=(Board.HEURISTIC_FACTOR_DOTS*self.streak_value(new_dots_streak))
+			return_dots_value+=(Board.HEURISTIC_FACTOR_DOTS*self.streak_value(new_dots_streak))
 		else:
-			if self.ai_strategy == 'color':
-				value-=(Board.HEURISTIC_FACTOR_DOTS*self.streak_value(1))
-			else:
-				value+=(Board.HEURISTIC_FACTOR_DOTS*self.streak_value(1))
-		if new_color_streak != 1:
-			if self.ai_strategy == 'color':
-				value+=(Board.HEURISTIC_FACTOR_COLOR*self.streak_value(new_color_streak))
-			else:
-				value-=(Board.HEURISTIC_FACTOR_COLOR*self.streak_value(new_color_streak))
+			return_dots_value+=(Board.HEURISTIC_FACTOR_DOTS*self.streak_value(1))
+		
+		if new_color_streak != 1:	
+			return_color_value+=(Board.HEURISTIC_FACTOR_COLOR*self.streak_value(new_color_streak))
 		else:
-			if self.ai_strategy == 'color':
-				value+=(Board.HEURISTIC_FACTOR_COLOR*self.streak_value(1))
-			else:
-				value-=(Board.HEURISTIC_FACTOR_COLOR*self.streak_value(1))
+			return_color_value+=(Board.HEURISTIC_FACTOR_COLOR*self.streak_value(1))
+			
+		if self.ai_strategy == 'color':
+			return_value+=return_color_value
+			return_value-=return_dots_value
+		else:
+			return_value-=return_color_value
+			return_value+=return_dots_value
 
-		# if self.ai_strategy == 'dots':
-		# 	return_value = -1 * return_value
-
-		return value
+		return return_value
 		
 
 
