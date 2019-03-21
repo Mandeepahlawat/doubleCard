@@ -33,7 +33,7 @@ def main():
 			value = input("Enter player1's strategy (dots or color)\n")
 	else:
 		value = "color"
-		print("Player1 choosen strategy %s \n" % p1.strategy)
+		print("Player1 choosen strategy %s \n" % value)
 	
 	p1.strategy = value
 	if value == 'dots':
