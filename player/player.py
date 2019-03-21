@@ -83,14 +83,17 @@ class Player:
 			node.best = [None, -math.inf]
 		
 		if depth == 1:
-			board.heuristic_value = board.heuristic(0, ai_player.strategy)
+			board.heuristic_value = board.heuristic(0, cmd)
 			#print("level 1 heuristic => " + str(board.heuristic_value))
 
 		# use game finish condition for tournament
 		if depth == 0 or board.is_game_finished(self, other_player):
 			# depth is 0, means we are the required depth so need to increate 
 			#the leaf node counter and return en value
-			score = board.heuristic(board.heuristic_value, ai_player.strategy, cmd)
+			if board.is_game_finished(self, other_player) and board.heuristic_value == None:
+				score = board.heuristic(0, cmd)
+			else:
+				score = board.heuristic(board.heuristic_value, cmd)
 			#print("value:" + str(score) + ", cmd:" + cmd)
 			Player.EN_LEVEL_3_COUNT += 1
 			return [cmd, score]

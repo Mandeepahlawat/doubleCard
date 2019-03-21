@@ -262,13 +262,14 @@ class Board:
 		return score		
 
 	def heuristic(self, self_heuristic_value, nextCommand=None):
+		
 		value = self_heuristic_value
 		if(self.ai_strategy == 'color'):
-			Board.HEURISTIC_FACTOR_COLOR = 1
-			Board.HEURISTIC_FACTOR_DOTS = 1.1
-		if(self.ai_strategy == 'dots'):
 			Board.HEURISTIC_FACTOR_COLOR = 1.1
 			Board.HEURISTIC_FACTOR_DOTS = 1
+		if(self.ai_strategy == 'dots'):
+			Board.HEURISTIC_FACTOR_COLOR = 1
+			Board.HEURISTIC_FACTOR_DOTS = 1.1
 
 		if not nextCommand:
 			#compute heuristic
