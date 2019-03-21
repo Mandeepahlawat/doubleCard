@@ -86,11 +86,12 @@ class Player:
 			board.heuristic_value = board.heuristic(0, cmd)
 			#print("level 1 heuristic => " + str(board.heuristic_value))
 
+		game_finished = board.is_game_finished(self, other_player)
 		# use game finish condition for tournament
-		if depth == 0 or board.is_game_finished(self, other_player):
+		if depth == 0 or game_finished:
 			# depth is 0, means we are the required depth so need to increate 
 			#the leaf node counter and return en value
-			if board.is_game_finished(self, other_player) and board.heuristic_value == None:
+			if game_finished and board.heuristic_value == None:
 				score = board.heuristic(0, cmd)
 			else:
 				score = board.heuristic(board.heuristic_value, cmd)
