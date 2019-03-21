@@ -2,6 +2,7 @@ from card.card import Card
 from player.player import Player
 from command.command import Command
 from board.board import Board
+import time
 
 def main():
 	players = []
@@ -13,6 +14,7 @@ def main():
 	board = Board()
 
 	DEPTH_LEVEL = 3
+	GAME_DRAW_COUNT = 40
 	
 	#set strategy
 	value = input("Enter player1's strategy (dots or color)\n")
@@ -63,12 +65,17 @@ def main():
 
 	# using this counter intelligently to print spaces in trace file
 	counter = 0
-	while not game_completed:
+	moves_played_count = 0
+	current_move_start_time = None
+	current_move_end_time = None
+
+	while not game_completed and moves_played_count < GAME_DRAW_COUNT:
 		# reset static variables to trace result of each iteration
 		Player.EN_LEVEL_3_COUNT = 0
 		Player.EN_LEVEL_2_LIST = []
 		board.heuristic_value = None
 		for player in players:
+			moves_played_count += 1
 			print(str(board))
 			possibleMoves = Command.returnPossibleMoves(board, player, cmd)
 
@@ -79,8 +86,9 @@ def main():
 				else:
 					#player is AI and we need to find appropriate command automatically for AI player
 					cmd, score = player.minimax(board, DEPTH_LEVEL, cmd, players, is_alpha_beata)
-					if not player.is_human:
-						
+					
+					# write content in the trace file
+					if not player.is_human and new_file:
 						if counter != 0:
 							new_file.write("\n\n")
 
@@ -106,7 +114,7 @@ def main():
 						cmd, score = player.minimax(board, DEPTH_LEVEL, cmd, players, is_alpha_beata)
 						
 						# write content in the trace file
-						if not player.is_human:
+						if not player.is_human and new_file:
 							if counter != 0:
 								new_file.write("\n\n")
 
@@ -145,6 +153,14 @@ def main():
 			# play move
 			board.play_move(cmd, player)
 
+			if player.is_human:
+				current_move_start_time = time.time()
+			else:
+				current_move_end_time = time.time()
+
+			if current_move_start_time and current_move_end_time and (current_move_end_time > current_move_start_time):
+				print("===== Time for next move ============= %s =======" % (current_move_end_time - current_move_start_time + .5))
+
 			# if game is finished, print winner
 			if board.is_game_finished(p1, p2):
 				if p1.winner and p2.winner:
@@ -156,6 +172,12 @@ def main():
 
 				game_completed = True
 				break
+
+			# if game draw count reaches
+			if moves_played_count == GAME_DRAW_COUNT:
+				print("=== Game Draw ===")
+				break
+
 		
 		# increase counter so need to print empty spaces above
 		if not read_file:
