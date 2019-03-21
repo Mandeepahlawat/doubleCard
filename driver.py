@@ -12,7 +12,7 @@ def main():
 
 	board = Board()
 
-	DEPTH_LEVEL = 2
+	DEPTH_LEVEL = 3
 	
 	#set strategy
 	value = input("Enter player1's strategy (dots or color)\n")
@@ -67,7 +67,7 @@ def main():
 		# reset static variables to trace result of each iteration
 		Player.EN_LEVEL_3_COUNT = 0
 		Player.EN_LEVEL_2_LIST = []
-		
+		board.heuristic_value = None
 		for player in players:
 			print(str(board))
 			possibleMoves = Command.returnPossibleMoves(board, player, cmd)

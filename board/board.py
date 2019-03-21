@@ -6,15 +6,21 @@ class Board:
 	BOARD_COLUMNS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
 	BOARD_ROWS = ['1','2','3','4','5','6','7','8','9','10','11','12']
 	BOARD_ROWS_TO_INDEX = {'1': 11,'2': 10,'3': 9,'4': 8,'5': 7,'6': 6,'7': 5,'8': 4,'9': 3,'10': 2,'11': 1,'12': 0}
+	HEURISTIC_FACTOR_COLOR = 1
+	HEURISTIC_FACTOR_DOTS = 1
+
 
 	def __init__(self):
 		# initialize board cells as array of arrays 
 		self.cells = []
+		self.heuristic_value = None
 		for row in reversed(Board.BOARD_ROWS):
 			row = []
 			for col in Board.BOARD_COLUMNS:
 				row.append(Cell())
 			self.cells.append(row)
+		#array to store the indexes of top most filled cells in every column
+		self.top_array = [0, 0, 0, 0, 0, 0, 0, 0]
 
 	@classmethod
 	def get_orientation_and_cell_position(cls, command):
@@ -161,13 +167,25 @@ class Board:
 	# play a move on board
 	def play_move(self, cmd, player, node=None):
 		cell1, cell2 = self.get_cells_by_command(cmd)
-		orientation = Board.get_orientation_and_cell_position(cmd)[0]
+		orientation, cell_position = Board.get_orientation_and_cell_position(cmd)
 
 		if cmd[0] == '0':
 			# regular command, get a random card from player cards
 			card = random.choice(player.get_empty_cards())
 			if node:
 				node.previous_orientation = card.orientation
+			#update top_array
+			index = Board.BOARD_COLUMNS.index(cell_position[0])
+			if orientation in ['1', '3', '5', '7']:
+				self.top_array[index] = self.top_array[index] + 1
+				self.top_array[index+1] = self.top_array[index] + 1
+			else:
+				self.top_array[index] = self.top_array[index] + 2
+			#TODO
+			#update top_array when deleting card
+			#update top_array when using recyling move 
+			# (i dont know whether cards are being removed first and then replaced 
+			# or just simply updated)
 		else:
 			# recycling command, need to remove mini cards from cell and get card from the cell
 			command_list = cmd.upper().strip().split(" ")
@@ -179,8 +197,10 @@ class Board:
 			if node:
 				node.previous_orientation = card.orientation
 
+
 			prev_cell1.remove_miniCard()
 			prev_cell2.remove_miniCard()
+
 
 		if orientation in ['1', '4', '5', '8']:
 			cell1.set_miniCard(card.miniCard1(orientation), orientation)
@@ -238,7 +258,291 @@ class Board:
 
 		score = whiteO + (3*white0) - (2*red0) - (1.5*redO)	
 		score = round(score, 1)	
-		return score
+		return score		
+
+	def heuristic(self, self_heuristic_value, AI_player_strategy, nextCommand=None):
+		value = self_heuristic_value
+		if(AI_player_strategy == 'color'):
+			Board.HEURISTIC_FACTOR_COLOR = 1
+			Board.HEURISTIC_FACTOR_DOTS = 1.1
+		if(AI_player_strategy == 'dots'):
+			Board.HEURISTIC_FACTOR_COLOR = 1.1
+			Board.HEURISTIC_FACTOR_DOTS = 1
+
+		if not nextCommand:
+			#compute heuristic
+			#Check 1
+			cols, rows, fdiag, bdiag = self.get_row_column_diagonals()
+			value+=self.compute_CRD_value(cols, AI_player_strategy, 'c')
+			#print('col:' + str(self.compute_CRD_value(cols, AI_player_strategy, 'c')))
+			value+=self.compute_CRD_value(rows, AI_player_strategy, 'r')
+			#print('row:' + str(self.compute_CRD_value(rows, AI_player_strategy, 'r')))
+			value+=self.compute_CRD_value(fdiag, AI_player_strategy, 'fd')
+			#print('fd:' + str(self.compute_CRD_value(fdiag, AI_player_strategy, 'fd')))
+			value+=self.compute_CRD_value(bdiag, AI_player_strategy, 'bd')
+			#print('bd:' + str(self.compute_CRD_value(bdiag, AI_player_strategy, 'bd')))
+
+			#check 2 pending
+			#3 together of opposite player
+
+		else:
+			#use selfValue and compute new value by
+			# placing newCommand on to the board
+			value+=self.compute_CRD_value_proximity(nextCommand)
+
+		return value
+
+
+
+	def compute_CRD_value(self, card_lists, AI_player_strategy, type_of_lists):
+		total_dots_value = 0
+		total_color_value = 0
+		return_value = 0
+		#heuristic check 1
+		#maximizing color and minimizing dots in this check
+		#will reverse this order in the end according to AI strategy
+		for row in card_lists:
+			row_dots_value = 0
+			row_color_value = 0
+			if len(row) > 3:
+				streak_dots = 1
+				streak_color = 1
+				card_count = 0
+				skip = False
+				consecutive_empty_cells = False
+				for r in range(len(row)-1):
+					#check whether cell is empty
+					if row[r].text() is not None or not skip:
+						consecutive_empty_cells = False
+						card_count+=1
+						if row[r].text() == row[r-1].text():
+							streak_dots+=1
+							# if streak_dots > 2:
+							# 	if AI_player_strategy == 'color':
+							# 		return_value-=150
+						else:
+							row_dots_value = row_dots_value + self.streak_value(streak_dots)
+							streak_dots = 1
+						
+						if row[r].color() == row[r-1].color():
+							streak_color+=1
+							# if streak_color > 2:
+							# 	if AI_player_strategy == 'dots':
+							# 		return_value-=150
+						else:
+							row_color_value = row_color_value + self.streak_value(streak_color)
+							streak_color=1
+						
+						if type_of_lists == 'r':
+							#if row is full, reset value
+							#*****RECYCLING NOT CONSIDERED***
+							if card_count == 8:
+								row_color_value = 0
+								row_dots_value = 0
+							
+						elif type_of_lists == 'c':
+							#check only top 4 cards
+							if card_count == 4:
+								break
+				
+						elif type_of_lists == 'fd':
+							temp = 1
+						else:
+							temp = 2
+
+					else:
+						#check streaks and add or subtract corresponding values to vaule
+						if card_count != 0 and not consecutive_empty_cells:
+							row_dots_value = row_dots_value + self.streak_value(streak_dots)
+							row_color_value = row_color_value + self.streak_value(streak_color)
+							streak_dots = 1
+							streak_color = 1
+							consecutive_empty_cells = True
+
+			total_color_value+=row_color_value
+			total_dots_value+=row_dots_value
+			
+			return_value = (Board.HEURISTIC_FACTOR_COLOR*total_color_value)-(Board.HEURISTIC_FACTOR_DOTS*total_dots_value)
+			if AI_player_strategy == 'dots':
+				return_value = -1 * return_value
+			return return_value
+
+	def streak_value(self, value):
+		if value == 1:
+			return 2
+		elif value == 2:
+			return 25
+		elif value == 3:
+			return 75
+		else:
+			return 150 
+
+	def compute_CRD_value_proximity(self, cmd):
+		value = 0
+		#only handling regular moves
+		orientation, cell1_position = Board.get_orientation_and_cell_position(cmd)
+		cell2_position = None
+		orientation_type = None
+		if orientation in ['1','3','5','7']:
+			cell2_position = chr(ord(cell1_position[0]) + 1)  + cell1_position[1:]
+			orientation_type = 'horizontal'
+		else:
+			cell2_position = cell1_position[0] + str(int(cell1_position[1:]) + 1)
+			orientation_type = 'vertical'
+
+		#calculate adjusted values in the proximity of cell 1
+		row, col, fd, bd = self.get_nearest_RCDs(cell1_position)
+		
+		value+=self.calculate_adjusted_streak_value(row)
+		value+=self.calculate_adjusted_streak_value(col)
+		value+=self.calculate_adjusted_streak_value(fd)
+		value+=self.calculate_adjusted_streak_value(bd)
+
+		#calculate adjusted values in the proximity of cell 2
+		row, col, fd, bd = self.get_nearest_RCDs(cell2_position)
+		
+		value+=self.calculate_adjusted_streak_value(row)
+		value+=self.calculate_adjusted_streak_value(col)
+		value+=self.calculate_adjusted_streak_value(fd)
+		value+=self.calculate_adjusted_streak_value(bd)
+
+		return value
+
+
+
+	def get_nearest_RCDs(self, position):
+		col_index, row_index = self.get_cell_index_by_string_position(position)
+		row = []
+		col = []
+		fd = []
+		bd = []
+		for i in range(-3, 4):
+			if i != 0:
+				if col_index+i >= 0 and col_index+i < 8 and row_index+i >= 0 and row_index+i < 12:
+					row.append(self.cells[row_index][col_index+i])
+					col.append(self.cells[row_index+i][col_index])
+					fd.append(self.cells[row_index+i][col_index+i])
+					if col_index+i >= 0 and col_index+i < 8 and row_index-i >= 0 and row_index-i < 12:
+						bd.append(self.cells[row_index-i][col_index+i])
+					else:
+						bd.append(None)
+				elif col_index+i >= 0 and col_index+i < 8:
+					row.append(self.cells[row_index][col_index+i])
+					col.append(None)
+					fd.append(None)
+					bd.append(None)
+				elif row_index+i >= 0 and row_index+i < 12:
+					col.append(self.cells[row_index+i][col_index])
+					row.append(None)
+					fd.append(None)
+					bd.append(None)
+				else:
+					row.append(None)
+					col.append(None)
+					fd.append(None)
+					bd.append(None)
+			else:
+				row.append(self.cells[row_index][col_index])
+				col.append(self.cells[row_index][col_index])
+				fd.append(self.cells[row_index][col_index])
+				bd.append(self.cells[row_index][col_index])
+		
+		return row, col, fd, bd
+
+
+	def calculate_adjusted_streak_value(self, row):
+		value = 0
+		target_cell = row[3]
+		streak_color_break = False
+		streak_dots_break = False
+		previous_color_streak_left = 1
+		previous_color_streak_right = 1
+		previous_dots_streak_left = 1
+		previous_dots_streak_right = 1
+		new_color_streak = 1
+		new_dots_streak = 1
+
+		#left side of target
+		for i in range(1, 3):
+			if row[3-i] is not None and row[3-i-1] is not None and row[3-i].text() is not None:
+				if not streak_dots_break:		
+					if row[3-i].text() == row[3-i-1].text():
+						previous_dots_streak_left+=1
+					else:
+						streak_dots_break = True
+				if not streak_color_break:		
+					if row[3-i].color() == row[3-i-1].color():
+						previous_color_streak_left+=1
+					else:
+						streak_dots_break = True
+			else:
+				streak_color_break = True
+				streak_dots_break = True
+
+		if row[2] is not None:
+			if row[3].text() ==  row[2].text():
+				value+=(Board.HEURISTIC_FACTOR_DOTS*self.streak_value(previous_dots_streak_left))
+				new_dots_streak+=previous_dots_streak_left
+			if row[3].color() ==  row[2].color():
+				value-=(Board.HEURISTIC_FACTOR_COLOR*self.streak_value(previous_color_streak_left))
+				new_color_streak+=previous_color_streak_left
+
+		#right side of target
+		streak_color_break = False
+		streak_dots_break = False
+		for i in range(1, 3):
+			if row[3+i] is not None and row[3+i+1] is not None and row[3+i].text() is not None:
+				if not streak_dots_break:		
+					if row[3+i].text() == row[3+i+1].text():
+						previous_dots_streak_right+=1
+					else:
+						streak_dots_break = True
+				if not streak_color_break:		
+					if row[3+i].color() == row[3+i+1].color():
+						previous_color_streak_right+=1
+					else:
+						streak_dots_break = True
+			else:
+				streak_color_break = True
+				streak_dots_break = True
+
+		
+		
+		if row[4] is not None:
+			if row[3].text() ==  row[4].text():
+				value+=(Board.HEURISTIC_FACTOR_DOTS*self.streak_value(previous_dots_streak_right))
+				#handling the case so that the same cell doesnt get included twice
+				if new_dots_streak != 1:
+					new_dots_streak-=1
+				new_dots_streak+=previous_dots_streak_right
+			if row[3].color() ==  row[4].color():
+				value-=(Board.HEURISTIC_FACTOR_COLOR*self.streak_value(previous_color_streak_right))
+				if new_color_streak != 1:
+					new_color_streak-=1
+				new_color_streak+=previous_color_streak_right
+
+		if new_dots_streak != 1:
+			value-=(Board.HEURISTIC_FACTOR_DOTS*self.streak_value(new_dots_streak))
+		else:
+			value-=(Board.HEURISTIC_FACTOR_DOTS*self.streak_value(1))
+		if new_color_streak != 1:
+			value+=(Board.HEURISTIC_FACTOR_COLOR*self.streak_value(new_color_streak))
+		else:
+			value+=(Board.HEURISTIC_FACTOR_COLOR*self.streak_value(1))
+
+		return value
+		
+
+
+		
+
+
+
+
+
+	
+				
+			 
 
 
 		

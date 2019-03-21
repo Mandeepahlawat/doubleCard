@@ -72,6 +72,7 @@ class Player:
 	def minimax(self, board, depth, cmd, players, is_alpha_beta=False, parent_node = None):
 		# human is always minimizing whereas AI is always maximizing
 		other_player = players[1] if self == players[0] else players[0]
+		ai_player = self if other_player.is_human else other_player
 
 		# create a node for the last command being played
 		node = Node(board, cmd, parent_node, self)
@@ -80,16 +81,22 @@ class Player:
 			node.best = [None, math.inf]
 		else:
 			node.best = [None, -math.inf]
+		
+		if depth == 1:
+			board.heuristic_value = board.heuristic(0, ai_player.strategy)
+			#print("level 1 heuristic => " + str(board.heuristic_value))
 
 		# use game finish condition for tournament
 		if depth == 0: #or board.is_game_finished(self, other_player):
 			# depth is 0, means we are the required depth so need to increate 
 			#the leaf node counter and return en value
-			score = board.compute_EN()
+			score = board.heuristic(board.heuristic_value, ai_player.strategy, cmd)
+			#print("value:" + str(score) + ", cmd:" + cmd)
 			Player.EN_LEVEL_3_COUNT += 1
 			return [cmd, score]
 
 		for move in Command.returnPossibleMoves(board, self, cmd):
+			#print("move:" + move)
 			if not node.prune:
 				board.play_move(move, self, node)
 				next_move, score = other_player.minimax(board, depth - 1, move, players, is_alpha_beta, node)
