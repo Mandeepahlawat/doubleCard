@@ -21,6 +21,7 @@ class Board:
 			self.cells.append(row)
 		#array to store the indexes of top most filled cells in every column
 		self.top_array = [0, 0, 0, 0, 0, 0, 0, 0]
+		self.ai_strategy = None
 
 	@classmethod
 	def get_orientation_and_cell_position(cls, command):
@@ -260,12 +261,12 @@ class Board:
 		score = round(score, 1)	
 		return score		
 
-	def heuristic(self, self_heuristic_value, AI_player_strategy, nextCommand=None):
+	def heuristic(self, self_heuristic_value, nextCommand=None):
 		value = self_heuristic_value
-		if(AI_player_strategy == 'color'):
+		if(self.ai_strategy == 'color'):
 			Board.HEURISTIC_FACTOR_COLOR = 1
 			Board.HEURISTIC_FACTOR_DOTS = 1.1
-		if(AI_player_strategy == 'dots'):
+		if(self.ai_strategy == 'dots'):
 			Board.HEURISTIC_FACTOR_COLOR = 1.1
 			Board.HEURISTIC_FACTOR_DOTS = 1
 
@@ -273,13 +274,13 @@ class Board:
 			#compute heuristic
 			#Check 1
 			cols, rows, fdiag, bdiag = self.get_row_column_diagonals()
-			value+=self.compute_CRD_value(cols, AI_player_strategy, 'c')
+			value+=self.compute_CRD_value(cols, 'c')
 			#print('col:' + str(self.compute_CRD_value(cols, AI_player_strategy, 'c')))
-			value+=self.compute_CRD_value(rows, AI_player_strategy, 'r')
+			value+=self.compute_CRD_value(rows, 'r')
 			#print('row:' + str(self.compute_CRD_value(rows, AI_player_strategy, 'r')))
-			value+=self.compute_CRD_value(fdiag, AI_player_strategy, 'fd')
+			value+=self.compute_CRD_value(fdiag, 'fd')
 			#print('fd:' + str(self.compute_CRD_value(fdiag, AI_player_strategy, 'fd')))
-			value+=self.compute_CRD_value(bdiag, AI_player_strategy, 'bd')
+			value+=self.compute_CRD_value(bdiag, 'bd')
 			#print('bd:' + str(self.compute_CRD_value(bdiag, AI_player_strategy, 'bd')))
 
 			#check 2 pending
@@ -294,7 +295,7 @@ class Board:
 
 
 
-	def compute_CRD_value(self, card_lists, AI_player_strategy, type_of_lists):
+	def compute_CRD_value(self, card_lists, type_of_lists):
 		total_dots_value = 0
 		total_color_value = 0
 		return_value = 0
@@ -362,10 +363,10 @@ class Board:
 			total_color_value+=row_color_value
 			total_dots_value+=row_dots_value
 			
-			return_value = (Board.HEURISTIC_FACTOR_COLOR*total_color_value)-(Board.HEURISTIC_FACTOR_DOTS*total_dots_value)
-			if AI_player_strategy == 'dots':
-				return_value = -1 * return_value
-			return return_value
+		return_value = (Board.HEURISTIC_FACTOR_COLOR*total_color_value)-(Board.HEURISTIC_FACTOR_DOTS*total_dots_value)
+		if self.ai_strategy == 'dots':
+			return_value = -1 * return_value
+		return return_value
 
 	def streak_value(self, value):
 		if value == 1:
@@ -516,19 +517,37 @@ class Board:
 					new_dots_streak-=1
 				new_dots_streak+=previous_dots_streak_right
 			if row[3].color() ==  row[4].color():
-				value-=(Board.HEURISTIC_FACTOR_COLOR*self.streak_value(previous_color_streak_right))
+				if self.ai_strategy == 'color':
+					value-=(Board.HEURISTIC_FACTOR_COLOR*self.streak_value(previous_color_streak_right))
+				else:
+					value+=(Board.HEURISTIC_FACTOR_COLOR*self.streak_value(previous_color_streak_right))
 				if new_color_streak != 1:
 					new_color_streak-=1
 				new_color_streak+=previous_color_streak_right
 
 		if new_dots_streak != 1:
-			value-=(Board.HEURISTIC_FACTOR_DOTS*self.streak_value(new_dots_streak))
+			if self.ai_strategy == 'color':
+				value-=(Board.HEURISTIC_FACTOR_DOTS*self.streak_value(new_dots_streak))
+			else:
+				value+=(Board.HEURISTIC_FACTOR_DOTS*self.streak_value(new_dots_streak))
 		else:
-			value-=(Board.HEURISTIC_FACTOR_DOTS*self.streak_value(1))
+			if self.ai_strategy == 'color':
+				value-=(Board.HEURISTIC_FACTOR_DOTS*self.streak_value(1))
+			else:
+				value+=(Board.HEURISTIC_FACTOR_DOTS*self.streak_value(1))
 		if new_color_streak != 1:
-			value+=(Board.HEURISTIC_FACTOR_COLOR*self.streak_value(new_color_streak))
+			if self.ai_strategy == 'color':
+				value+=(Board.HEURISTIC_FACTOR_COLOR*self.streak_value(new_color_streak))
+			else:
+				value-=(Board.HEURISTIC_FACTOR_COLOR*self.streak_value(new_color_streak))
 		else:
-			value+=(Board.HEURISTIC_FACTOR_COLOR*self.streak_value(1))
+			if self.ai_strategy == 'color':
+				value+=(Board.HEURISTIC_FACTOR_COLOR*self.streak_value(1))
+			else:
+				value-=(Board.HEURISTIC_FACTOR_COLOR*self.streak_value(1))
+
+		# if self.ai_strategy == 'dots':
+		# 	return_value = -1 * return_value
 
 		return value
 		
