@@ -13,7 +13,8 @@ def main():
 
 	board = Board()
 
-	DEPTH_LEVEL = 2
+	NORMAL_DEPTH_LEVEL = 3
+	RECYCLE_DEPTH_LEVEL = 2
 	GAME_DRAW_COUNT = 40
 
 	# set if player is human or AI
@@ -85,6 +86,12 @@ def main():
 		board.heuristic_value = None
 		for player in players:
 			moves_played_count += 1
+			
+			if moves_played_count > 24:
+				depth_level = RECYCLE_DEPTH_LEVEL
+			else:
+				depth_level = NORMAL_DEPTH_LEVEL
+
 			print(str(board))
 			possibleMoves = Command.returnPossibleMoves(board, player, cmd)
 
@@ -94,7 +101,7 @@ def main():
 					cmd = input("$$ ").strip().upper()
 				else:
 					#player is AI and we need to find appropriate command automatically for AI player
-					cmd, score = player.minimax(board, DEPTH_LEVEL, cmd, players, is_alpha_beata)
+					cmd, score = player.minimax(board, depth_level, cmd, players, is_alpha_beata)
 					print("======== AI move: %s =======" % cmd)
 					
 					# write content in the trace file
@@ -121,7 +128,7 @@ def main():
 						cmd = input("$$ ").strip().upper()
 					else:
 						#player is AI and we need to find appropriate command automatically for AI player
-						cmd, score = player.minimax(board, DEPTH_LEVEL, cmd, players, is_alpha_beata)
+						cmd, score = player.minimax(board, depth_level, cmd, players, is_alpha_beata)
 						print("======== AI move: %s =======" % cmd)
 						
 						# write content in the trace file
