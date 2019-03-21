@@ -142,6 +142,10 @@ class Command:
 								moves.append(col + row + " " + corresponding_cell + " 4 " + col + row)
 								moves.append(col + row + " " + corresponding_cell + " 6 " + col + row)
 								moves.append(col + row + " " + corresponding_cell + " 8 " + col + row)
+								moves.append(col + row + " " + corresponding_cell + " 2 " + corresponding_cell)
+								moves.append(col + row + " " + corresponding_cell + " 4 " + corresponding_cell)
+								moves.append(col + row + " " + corresponding_cell + " 6 " + corresponding_cell)
+								moves.append(col + row + " " + corresponding_cell + " 8 " + corresponding_cell)
 							
 							arr = ['1','3','5','7']
 							arr.remove(cell_orientation)
