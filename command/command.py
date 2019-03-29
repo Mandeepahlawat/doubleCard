@@ -152,29 +152,7 @@ class Command:
 							for orientation in arr:
 								moves.append(col + row + " " + corresponding_cell + " " + orientation + " " + col + row)
 
-						
 						possibleMoves.extend(moves)
-					'''
-					else:
-						moves = []
-						#add this card's change in orientations as valid commands
-						if corresponding_cell_orientation == "even":
-
-							arr = ['2','4','6','8']
-							arr.remove(cell_orientation)
-							for orientation in arr:
-								moves.append(col + row + " " + corresponding_cell + " " + orientation + " " + col + row)
-
-						elif corresponding_cell_orientation == "odd":
-							
-							arr = ['1','3','5','7']
-							arr.remove(cell_orientation)
-							for orientation in arr:
-								moves.append(col + row + " " + corresponding_cell + " " + orientation + " " + col + row)
-
-						
-						possibleMoves.extend(moves)
-						'''
 
 		return possibleMoves
 

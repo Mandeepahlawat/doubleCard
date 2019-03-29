@@ -13,7 +13,7 @@ def main():
 
 	board = Board()
 
-	NORMAL_DEPTH_LEVEL = 2
+	NORMAL_DEPTH_LEVEL = 3
 	RECYCLE_DEPTH_LEVEL = 2
 	GAME_DRAW_COUNT = 40
 

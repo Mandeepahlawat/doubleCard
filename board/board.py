@@ -182,11 +182,6 @@ class Board:
 				self.top_array[index+1] = self.top_array[index] + 1
 			else:
 				self.top_array[index] = self.top_array[index] + 2
-			#TODO
-			#update top_array when deleting card
-			#update top_array when using recyling move 
-			# (i dont know whether cards are being removed first and then replaced 
-			# or just simply updated)
 		else:
 			# recycling command, need to remove mini cards from cell and get card from the cell
 			command_list = cmd.upper().strip().split(" ")
@@ -273,19 +268,11 @@ class Board:
 
 		if not nextCommand:
 			#compute heuristic
-			#Check 1
 			cols, rows, fdiag, bdiag = self.get_row_column_diagonals()
 			value+=self.compute_CRD_value(cols, 'c')
-			#print('col:' + str(self.compute_CRD_value(cols, AI_player_strategy, 'c')))
 			value+=self.compute_CRD_value(rows, 'r')
-			#print('row:' + str(self.compute_CRD_value(rows, AI_player_strategy, 'r')))
 			value+=self.compute_CRD_value(fdiag, 'fd')
-			#print('fd:' + str(self.compute_CRD_value(fdiag, AI_player_strategy, 'fd')))
 			value+=self.compute_CRD_value(bdiag, 'bd')
-			#print('bd:' + str(self.compute_CRD_value(bdiag, AI_player_strategy, 'bd')))
-
-			#check 2 pending
-			#3 together of opposite player
 
 		else:
 			#use selfValue and compute new value by
@@ -643,15 +630,16 @@ class Board:
 	def computeNaiveNeighbourValue(self, cell_position):
 		value = 0
 		target_cell = self.get_cell_by_string_position(cell_position)
-		row_index, col_index = self.get_cell_index_by_string_position(cell_position)
+		col_index, row_index = self.get_cell_index_by_string_position(cell_position)
 		neighbours = self.getNeighbouringCellsForNaiveHeuristic(row_index, col_index)
 		for neighbour in neighbours:
-			if self.ai_strategy == 'color':
-				if neighbour.miniCard.color == target_cell.miniCard.color:
-					value+=1
-			else:
-				if neighbour.miniCard.text == target_cell.miniCard.text:
-					value+=1
+			if neighbour != 'None' and neighbour.miniCard:
+				if self.ai_strategy == 'color':
+					if neighbour.miniCard.color == target_cell.miniCard.color:
+						value+=1
+				else:
+					if neighbour.miniCard.text == target_cell.miniCard.text:
+						value+=1
 				
 		return value
 

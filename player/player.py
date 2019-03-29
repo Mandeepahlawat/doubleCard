@@ -93,9 +93,12 @@ class Player:
 			#the leaf node counter and return en value
 			if depth != 0 and board.heuristic_value == None:
 				score = board.heuristic(0, cmd)
+				# uncomment below line to use the naive heuristic
+				#score = board.naive_heuristic(cmd)
 			else:
 				score = board.heuristic(board.heuristic_value, cmd)
-			#print("value:" + str(score) + ", cmd:" + cmd)
+				# uncomment below line to use the naive heuristic
+				#score = board.naive_heuristic(cmd)
 			Player.EN_LEVEL_3_COUNT += 1
 			return [cmd, score]
 
