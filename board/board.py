@@ -265,11 +265,11 @@ class Board:
 		
 		value = self_heuristic_value
 		if(self.ai_strategy == 'color'):
-			Board.HEURISTIC_FACTOR_COLOR = 1.1
+			Board.HEURISTIC_FACTOR_COLOR = 1.2
 			Board.HEURISTIC_FACTOR_DOTS = 1
 		if(self.ai_strategy == 'dots'):
 			Board.HEURISTIC_FACTOR_COLOR = 1
-			Board.HEURISTIC_FACTOR_DOTS = 1.1
+			Board.HEURISTIC_FACTOR_DOTS = 1.2
 
 		if not nextCommand:
 			#compute heuristic
@@ -552,18 +552,127 @@ class Board:
 			return_value+=return_dots_value
 
 		return return_value
+
+	def getNeighbouringCellsForNaiveHeuristic(self, row_index, col_index):
+		neighbours = []
+		if row_index == 0 and col_index == 0:
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index] + Board.BOARD_ROWS[row_index+1]))
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index+1] + Board.BOARD_ROWS[row_index+1]))
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index+1] + Board.BOARD_ROWS[row_index]))
+			neighbours.append("None")
+			neighbours.append("None")
+			neighbours.append("None")
+			neighbours.append("None")
+			neighbours.append("None")
+		elif row_index == 11 and col_index == 7:
+			neighbours.append("None")
+			neighbours.append("None")
+			neighbours.append("None")
+			neighbours.append("None")
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index] + Board.BOARD_ROWS[row_index-1]))
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index-1] + Board.BOARD_ROWS[row_index-1]))
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index-1] + Board.BOARD_ROWS[row_index]))
+			neighbours.append("None")
+		elif row_index == 0 and col_index == 7:
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index] + Board.BOARD_ROWS[row_index+1]))
+			neighbours.append("None")
+			neighbours.append("None")
+			neighbours.append("None")
+			neighbours.append("None")
+			neighbours.append("None")
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index-1] + Board.BOARD_ROWS[row_index]))
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index-1] + Board.BOARD_ROWS[row_index+1]))
+		elif row_index == 11 and col_index == 0:
+			neighbours.append("None")
+			neighbours.append("None")
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index+1] + Board.BOARD_ROWS[row_index]))
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index+1] + Board.BOARD_ROWS[row_index-1]))
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index] + Board.BOARD_ROWS[row_index-1]))
+			neighbours.append("None")
+			neighbours.append("None")
+			neighbours.append("None")
+		elif row_index == 0:
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index] + Board.BOARD_ROWS[row_index+1]))
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index+1] + Board.BOARD_ROWS[row_index+1]))
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index+1] + Board.BOARD_ROWS[row_index]))
+			neighbours.append("None")
+			neighbours.append("None")
+			neighbours.append("None")
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index-1] + Board.BOARD_ROWS[row_index]))
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index-1] + Board.BOARD_ROWS[row_index+1]))
+		elif col_index == 0:
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index] + Board.BOARD_ROWS[row_index+1]))
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index+1] + Board.BOARD_ROWS[row_index+1]))
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index+1] + Board.BOARD_ROWS[row_index]))
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index+1] + Board.BOARD_ROWS[row_index-1]))
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index] + Board.BOARD_ROWS[row_index-1]))
+			neighbours.append("None")
+			neighbours.append("None")
+			neighbours.append("None")
+		elif row_index == 11:
+			neighbours.append("None")
+			neighbours.append("None")
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index+1] + Board.BOARD_ROWS[row_index]))
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index+1] + Board.BOARD_ROWS[row_index-1]))
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index] + Board.BOARD_ROWS[row_index-1]))
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index-1] + Board.BOARD_ROWS[row_index-1]))
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index-1] + Board.BOARD_ROWS[row_index]))
+			neighbours.append("None")
+		elif col_index == 7:
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index] + Board.BOARD_ROWS[row_index+1]))
+			neighbours.append("None")
+			neighbours.append("None")
+			neighbours.append("None")
+			neighbours.append("None")
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index] + Board.BOARD_ROWS[row_index-1]))
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index-1] + Board.BOARD_ROWS[row_index-1]))
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index-1] + Board.BOARD_ROWS[row_index]))
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index-1] + Board.BOARD_ROWS[row_index+1]))
+		else:
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index] + Board.BOARD_ROWS[row_index+1]))
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index+1] + Board.BOARD_ROWS[row_index+1]))
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index+1] + Board.BOARD_ROWS[row_index]))
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index+1] + Board.BOARD_ROWS[row_index-1]))
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index] + Board.BOARD_ROWS[row_index-1]))
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index-1] + Board.BOARD_ROWS[row_index-1]))
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index-1] + Board.BOARD_ROWS[row_index]))
+			neighbours.append(self.get_cell_by_string_position(Board.BOARD_COLUMNS[col_index-1] + Board.BOARD_ROWS[row_index+1]))
 		
+		return neighbours
 
-
-		
-
-
-
-
-
-	
+	def computeNaiveNeighbourValue(self, cell_position):
+		value = 0
+		target_cell = self.get_cell_by_string_position(cell_position)
+		row_index, col_index = self.get_cell_index_by_string_position(cell_position)
+		neighbours = self.getNeighbouringCellsForNaiveHeuristic(row_index, col_index)
+		for neighbour in neighbours:
+			if self.ai_strategy == 'color':
+				if neighbour.miniCard.color == target_cell.miniCard.color:
+					value+=1
+			else:
+				if neighbour.miniCard.text == target_cell.miniCard.text:
+					value+=1
 				
-			 
+		return value
 
 
-		
+	def naive_heuristic(self, cmd):
+		value = 0
+
+		orientation, cell1_position = Board.get_orientation_and_cell_position(cmd)
+		cell2_position = None
+		orientation_type = None
+		if orientation in ['1','3','5','7']:
+			cell2_position = chr(ord(cell1_position[0]) + 1)  + cell1_position[1:]
+			orientation_type = 'horizontal'
+		else:
+			cell2_position = cell1_position[0] + str(int(cell1_position[1:]) + 1)
+			orientation_type = 'vertical'
+
+		#check for cell 1
+		value+=self.computeNaiveNeighbourValue(cell1_position)
+
+		#check for cell 2
+		value+=self.computeNaiveNeighbourValue(cell2_position)
+
+		return value
