@@ -84,7 +84,6 @@ class Player:
 		
 		if depth == 1:
 			board.heuristic_value = board.heuristic(0, cmd)
-			#print("level 1 heuristic => " + str(board.heuristic_value))
 
 		#game_finished = board.is_game_finished(self, other_player)
 		# use game finish condition for tournament
@@ -103,7 +102,6 @@ class Player:
 			return [cmd, score]
 
 		for move in Command.returnPossibleMoves(board, self, cmd):
-			#print("move:" + move)
 			if not node.prune:
 				board.play_move(move, self, node)
 				next_move, score = other_player.minimax(board, depth - 1, move, players, is_alpha_beta, node)
